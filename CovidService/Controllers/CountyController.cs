@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace CovidService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("CovidApi/[controller]")]
     public class CountyController : ControllerBase
     {
 
@@ -24,9 +24,11 @@ namespace CovidService.Controllers
             _logger.LogInformation("CountyController: _countyService={0}", _countyService);
         }
 
-        [HttpGet]
-        public CountySummary ByState()
+        [HttpGet("Summary")]
+        public CountySummary GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
+            _logger.LogInformation("GetSummary: {}, {}, {}, {}, {}", county, startDate, endDate, pageIndex, pageSize);
+
             /*
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
@@ -39,5 +41,8 @@ namespace CovidService.Controllers
             */
             return _countyService.GetSummary();
         }
+
+        // TODO Breakdown
+        // TODO Rate
     }
 }

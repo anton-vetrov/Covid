@@ -30,6 +30,8 @@ namespace CovidService
             services.AddScoped<ICountyService, CountyService>();
             services.AddScoped<IRepository, TestRepository>();
             services.AddControllers();
+
+            services.AddSwaggerDocument();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,7 +42,7 @@ namespace CovidService
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // TODO app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -50,6 +52,9 @@ namespace CovidService
             {
                 endpoints.MapControllers();
             });
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
         }
     }
 }
