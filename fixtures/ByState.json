@@ -1,0 +1,16 @@
+[
+    {
+        "State": "<Province_State>",
+        "Cases": {
+            "Average": 3,
+            "Minimum": {
+                "Count": 6,
+                "Date": "XX-XX-2023"
+            },
+            "Maximum": {
+                "Count" : 5,
+                "Date": "XX-XX-2023"
+            }
+        }
+    }
+]

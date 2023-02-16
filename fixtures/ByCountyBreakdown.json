@@ -1,0 +1,19 @@
+[
+    {
+        "County": "<Combined_Key>",
+        "BreakDown": [
+            {
+                "Date": "01-01-2023",
+                "NewCases": 6,
+                "TotalCases": 9,
+                "Rate": 6/X*100
+            },
+            {
+                "Date": "01-02-2023",
+                "NewCases": 3,
+                "TotalCases": 5,
+                "Rate": 3/9*100
+            }
+        ]
+    }
+]

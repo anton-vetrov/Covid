@@ -1,0 +1,18 @@
+[
+    {
+        "County":"<Combined_Key>",
+        "Lat": 32.53952745,
+        "Long": -86.64408227,
+        "Cases": {
+            "Average": 3,
+            "Minimum": {
+                "Count": 6,
+                "Date": "XX-XX-2023"
+            },
+            "Maximum": {
+                "Count" : 5,
+                "Date": "XX-XX-2023"
+            }
+        }
+    }
+]
