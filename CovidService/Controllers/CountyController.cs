@@ -25,7 +25,7 @@ namespace CovidService.Controllers
         }
 
         [HttpGet("Summary")]
-        public CountySummary GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public List<CountySummary> GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             _logger.LogInformation("GetSummary: {}, {}, {}, {}, {}", county, startDate, endDate, pageIndex, pageSize);
 
@@ -39,7 +39,7 @@ namespace CovidService.Controllers
             })
             .ToArray();
             */
-            return _countyService.GetSummary();
+            return _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize).ToList();
         }
 
         // TODO Breakdown

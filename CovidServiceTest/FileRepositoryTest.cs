@@ -12,15 +12,15 @@ namespace CovidServiceTest
     public class FileRepositoryTest
     {
         [TestMethod]
-        public void GetCounties_ReturnsList()
+        public void GetStates_ReturnsList()
         {
             using (var memoryStream = new MemoryStream(Properties.Resources.Covid19ConfirmedUS))
             {
                 var file = new FileRepository(memoryStream);
-                var counties = file.GetCounties();
+                var counties = file.GetStates();
 
-                Assert.AreEqual(2, counties.Count());
-                Assert.AreEqual("Autauga", counties[0].Name);
+                Assert.AreEqual(53, counties.Count());
+                Assert.AreEqual("Alabama", counties[0].Name);
             }
         }
 

@@ -15,173 +15,128 @@ namespace CovidService.Repositories
 {
     public class FileRepository : IRepository
     {
-        private class DistinctCountry
-        {
-            public DistinctCountry() 
-            {
-                States = new Dictionary<string, State>();
-            }
+        // TODO Hardcoded that to US contry only
+        private const int US = 840;
 
-            public int Id { get; set; }
-
-            public string Name { get; set; }
-
-            public Dictionary<string, State> States { get; set; }
-
-            public Country ToCountry()
-            {
-                return new Country()
-                {
-                    Id = Id,
-                    Name = Name,
-                    States = States.Values.ToList()
-                };
-            }
-        }
-        /*
-        public class DistinctState
-        {
-            public string Id { get; set; }
-            public string Name { get; set; }
-            public List<County> Counties { get; set; }
-
-            public State ToState()
-            {
-                return new State() 
-                {
-                    Id = Id,
-                    Name = Name,
-                    Counties = Counties
-                };
-            }
-        }
-        */
+        Dictionary<int, Country> _countries;
 
         public FileRepository(Stream stream)
         {
-            using (var context = new CovidContext())
+            _countries = new Dictionary<int, Country>();
+
+            using (var reader = new StreamReader(stream))
             {
-                using (var reader = new StreamReader(stream))
+                // CSV line length is less than 32767
+                //string line = reader.ReadLine();
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
-                    var distinctCountries = new Dictionary<int, DistinctCountry>();
+                    csv.Read();
+                    csv.ReadHeader();
 
-                    // CSV line length is less than 32767
-                    //string line = reader.ReadLine();
-                    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                    // 1. Find first Date
+                    int firstDateIndex = -1;
+                    var dates = new List<DateTime>();
+                    for (int columnIndex = 0; columnIndex < csv.HeaderRecord.Length; columnIndex++)
                     {
-                        csv.Read();
-                        csv.ReadHeader();
+                        DateTime date;
+                        if (DateTime.TryParse(csv.HeaderRecord[columnIndex], out date))
+                        {
+                            if (firstDateIndex < 0)
+                                firstDateIndex = columnIndex;
 
-                        // 1. Find first Date
-                        int firstDateIndex = -1;
-                        var dates = new List<DateTime>();
+                            dates.Add(date);
+                        }
+                    }
+
+                    if (firstDateIndex < 0)
+                    {
+                        throw (new ArgumentException("Date column has not been found"));
+                    }
+
+                    //2. Read line-by-line
+                    while (csv.Read())
+                    {
+                        var country = new Country();
+                        var state = new State();
+                        var county = new County(); // Supposed to be unique
+
+                        var cases = new SortedList<DateTime,Case>();
                         for (int columnIndex = 0; columnIndex < csv.HeaderRecord.Length; columnIndex++)
                         {
-                            DateTime date;
-                            if (DateTime.TryParse(csv.HeaderRecord[columnIndex], out date))
+                            if (columnIndex < firstDateIndex)
+                            // Read county & state
                             {
-                                if (firstDateIndex < 0)
-                                    firstDateIndex = columnIndex;
-                                
-                                dates.Add(date);
+                                switch (csv.HeaderRecord[columnIndex])
+                                {
+                                    case "UID":
+                                        county.Id = Int32.Parse(csv[columnIndex]);
+                                        break;
+                                    case "Admin2":
+                                        county.Name = csv[columnIndex];
+                                        break;
+                                    case "Long_":
+                                        county.Long = Double.Parse(csv[columnIndex]);
+                                        break;
+                                    case "Lat":
+                                        county.Lat = Double.Parse(csv[columnIndex]);
+                                        break;
+                                    case "Combined_Key":
+                                        county.CombinedKey = csv[columnIndex];
+                                        break;
+                                    case "Province_State":
+                                        state.Id = state.Name = csv[columnIndex];
+                                        break;
+                                    case "code3":
+                                        country.Id = Int32.Parse(csv[columnIndex]);
+                                        break;
+                                    case "iso2":
+                                        country.Name = csv[columnIndex];
+                                        break;
+                                }
+                            }
+                            else
+                            // Read cases
+                            {
+                                var dateCase = new Case()
+                                {
+                                    Date = dates[columnIndex - firstDateIndex],
+                                    Count = Int32.Parse(csv[columnIndex])
+                                };
+                                cases.Add(dateCase.Date, dateCase);
                             }
                         }
 
-                        if (firstDateIndex < 0)
-                        {
-                            throw (new ArgumentException("Date column has not been found"));
-                        }
+                        if (!_countries.TryAdd(country.Id, country))
+                            country = _countries[country.Id];
+                        if (!country.States.TryAdd(state.Id, state))
+                            state = country.States[state.Id];
+                        if (!state.Counties.TryAdd(county.Name, county))
+                            county = state.Counties[county.Name];
 
-                        //2. Read line-by-line
-                        while (csv.Read())
-                        {
-                            var country = new DistinctCountry();
-                            var state = new State()
-                            {
-                                Counties = new List<County>()
-                            };
-                            var county = new County(); // Supposed to be unique
-
-                            var cases = new List<Case>();
-                            for (int columnIndex = 0; columnIndex < csv.HeaderRecord.Length; columnIndex++)
-                            {
-                                if (columnIndex < firstDateIndex) 
-                                // Read county & state
-                                {
-                                    switch (csv.HeaderRecord[columnIndex])
-                                    {
-                                        case "UID":
-                                            county.Id = Int32.Parse(csv[columnIndex]);
-                                            break;
-                                        case "Admin2":
-                                            county.Name = csv[columnIndex];
-                                            break;
-                                        case "Long_":
-                                            county.Long = Double.Parse(csv[columnIndex]);
-                                            break;
-                                        case "Lat":
-                                            county.Lat = Double.Parse(csv[columnIndex]);
-                                            break;
-                                        case "Province_State":
-                                            state.Id = state.Name = csv[columnIndex];
-                                            break;
-                                        case "code3":
-                                            country.Id = Int32.Parse(csv[columnIndex]);
-                                            break;
-                                        case "iso2":
-                                            country.Name = csv[columnIndex];
-                                            break;
-                                    }
-                                }
-                                else 
-                                // Read cases
-                                {
-                                    var dateCase = new Case()
-                                    {
-                                        Date = dates[columnIndex - firstDateIndex],
-                                        Count = Int32.Parse(csv[columnIndex])
-                                    };
-                                    cases.Add(dateCase);
-                                }
-                            }
-
-                            county.Cases = cases;
-
-                            if (!distinctCountries.TryAdd(country.Id, country))
-                                country = distinctCountries[country.Id];
-                            if (!country.States.TryAdd(state.Id, state))
-                                state = country.States[state.Id];
-                            state.Counties.Add(county);
-                        }
-
-
+                        // TODO This will drop cases if there are duplicate line for the same country
+                        county.Cases = cases;
                     }
-
-                    foreach (var distictCountry in distinctCountries.Values)
-                    {
-                        context.Countries.Add(distictCountry.ToCountry());
-                    }
-
-                    context.SaveChanges();
                 }
             }
         }
         // TODO Add paging and selection
         public List<State> GetStates()
         {
-            using (var context = new CovidContext())
-            {
-                return context.States.ToList();
-            }
+            return _countries[US].States.Values.ToList();
         }
 
         // TODO Add paging and selection
         public List<County> GetCounties()
         {
-            using (var context = new CovidContext())
+            var counties = new List<County>();
+
+            List<State> states = _countries[US].States.Values.ToList();
+            foreach (var state in states)
             {
-                return context.Counties.ToList();
+                counties.AddRange(state.Counties.Values);
             }
+
+            return counties;
         }
     }
 

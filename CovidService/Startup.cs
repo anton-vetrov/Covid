@@ -28,7 +28,7 @@ namespace CovidService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ICountyService, CountyService>();
-            services.AddScoped<IRepository, TestRepository>();
+            services.AddSingleton<IRepository, FileRepository>();
             services.AddControllers();
 
             services.AddSwaggerDocument();

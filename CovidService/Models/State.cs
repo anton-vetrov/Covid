@@ -6,11 +6,14 @@ namespace CovidService.Models
 {
     public class State
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public State()
+        {
+            Counties = new Dictionary<string, County>();
+        }
+
         public string Id { get; set; }
         public string Name { get; set; }
-        public List<County> Counties { get; set; }
+        public Dictionary<string, County> Counties { get; set; }
 
     }
 }

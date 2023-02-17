@@ -2,7 +2,7 @@
 {
     public class CasesSummary
     {
-        public int Average { get; set; }
+        public double Average { get; set; }
         public DateAndCount Minimum { get; set; }
         public DateAndCount Maximum { get; set; }
     }

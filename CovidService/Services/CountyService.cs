@@ -1,5 +1,8 @@
 ﻿using CovidService.Repositories;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CovidService.Services
 {
@@ -10,13 +13,49 @@ namespace CovidService.Services
         {
             _repository = repository;
         }
-        public CountySummary GetSummary()
+        public IEnumerable<CountySummary> GetSummary(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
-            var summary = new CountySummary();
+            var summaries = new List<CountySummary>();
 
-            _repository.GetCounties();
+            // TODO This traverses the list of cases three times
+            var counties = _repository.GetCounties()
+                .Where(x => x.Name == countyName)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize);
 
-            return summary;
+            foreach (var county in counties)
+            {
+                var cases = county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
+
+                // TODO This is super ineffective, but short and passes array multiple times finding max and then date
+                var max = cases.Select(x => x.Value.Count).Max();
+                var min = cases.Select(x => x.Value.Count).Min();
+
+                summaries.Add(
+                    new CountySummary()
+                    {
+                        County = county.CombinedKey,
+                        Lat = county.Lat,
+                        Long = county.Long,
+                        Cases = new CasesSummary()
+                        {
+                            Average = Math.Round(cases.Select(x => x.Value.Count).Average(), 1),
+                            Minimum = new DateAndCount()
+                            {
+                                Count = min,
+                                Date = cases.Where(x => x.Value.Count == min).First().Value.Date
+                            },
+                            Maximum = new DateAndCount()
+                            {
+                                Count = max,
+                                Date = cases.Where(x => x.Value.Count == max).First().Value.Date
+                            }
+                        }
+                    }
+                );
+            }
+
+            return summaries;
         }
         public Breakdown GetBreakDown()
         {
