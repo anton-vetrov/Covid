@@ -29,7 +29,10 @@ namespace CovidService
         {
             services.AddScoped<ICountyService, CountyService>();
             services.AddSingleton<IRepository, OnlineRepository>();
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<HttpResponseExceptionFilter>();
+            });
 
             services.AddSwaggerDocument();
         }
@@ -40,6 +43,11 @@ namespace CovidService
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //app.UseExceptionHandler("/error");
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
             }
 
             // TODO app.UseHttpsRedirection();

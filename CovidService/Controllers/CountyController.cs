@@ -1,4 +1,5 @@
-﻿using CovidService.Services;
+﻿using CovidService.Controllers.Exceptions;
+using CovidService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,6 +13,8 @@ namespace CovidService.Controllers
     [Route("CovidApi/[controller]")]
     public class CountyController : ControllerBase
     {
+
+        private static int MaximumPageSize = 20;
 
         private readonly ILogger<CountyController> _logger;
         private ICountyService _countyService;
@@ -27,7 +30,24 @@ namespace CovidService.Controllers
         [HttpGet("Summary")]
         public PagedCountySummary GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
-            _logger.LogInformation("GetSummary: {}, {}, {}, {}, {}", county, startDate, endDate, pageIndex, pageSize);
+            _logger.LogInformation("{}, {}, {}, {}, {}", county, startDate, endDate, pageIndex, pageSize);
+
+            if (endDate < startDate)
+            {
+                _logger.LogError("Unexpected date range {}-{}", startDate, endDate);
+                throw (new UnexpectedInputException());
+            }
+
+            if (pageSize == 0)
+            {
+                _logger.LogError("Unexpected pageSize {}", pageSize);
+                throw (new UnexpectedInputException());
+            }
+
+            if (pageSize > MaximumPageSize)
+            {
+                _logger.LogInformation("Page size {} is too big limiting to {}", pageSize, MaximumPageSize);
+            }
 
             // TODO Output date only, currently it outputs date and time
             return _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize);
@@ -35,5 +55,9 @@ namespace CovidService.Controllers
 
         // TODO Breakdown
         // TODO Rate
+
+        [Route("/error")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult HandleError() => Problem();
     }
 }
