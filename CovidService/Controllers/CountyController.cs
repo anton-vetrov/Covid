@@ -21,7 +21,7 @@ namespace CovidService.Controllers
             _logger = logger;
             _countyService = countyService;
 
-            _logger.LogInformation("CountyController: _countyService={0}", _countyService);
+            _logger.LogInformation("_countyService={0}", _countyService);
         }
 
         [HttpGet("Summary")]
@@ -29,6 +29,7 @@ namespace CovidService.Controllers
         {
             _logger.LogInformation("GetSummary: {}, {}, {}, {}, {}", county, startDate, endDate, pageIndex, pageSize);
 
+            // TODO Output date only, currently it outputs date and time
             return _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize);
         }
 
