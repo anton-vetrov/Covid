@@ -25,21 +25,11 @@ namespace CovidService.Controllers
         }
 
         [HttpGet("Summary")]
-        public List<CountySummary> GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public PagedCountySummary GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             _logger.LogInformation("GetSummary: {}, {}, {}, {}, {}", county, startDate, endDate, pageIndex, pageSize);
 
-            /*
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
-            */
-            return _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize).ToList();
+            return _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize);
         }
 
         // TODO Breakdown

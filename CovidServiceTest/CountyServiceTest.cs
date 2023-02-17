@@ -43,7 +43,8 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
 
-            Assert.AreEqual(3258, summaries.Count());
+            Assert.AreEqual(3258, summaries.CountySummary.Count());
+            Assert.AreEqual(3258, summaries.TotalPagesCount);
         }
 
         [TestMethod]
@@ -51,8 +52,9 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
 
-            Assert.AreEqual(10, summaries.Count());
-            var county = summaries.First();
+            Assert.AreEqual(10, summaries.CountySummary.Count());
+            Assert.AreEqual(3258, summaries.TotalPagesCount);
+            var county = summaries.CountySummary.First();
             Assert.AreEqual("Chilton, Alabama, US", county.County);
             Assert.AreEqual(12876, county.Cases.Minimum.Count);
             Assert.AreEqual(new DateTime(2023, 2, 1), county.Cases.Minimum.Date);
@@ -66,8 +68,9 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
 
-            Assert.AreEqual(1, summaries.Count());
-            var county = summaries.First();
+            Assert.AreEqual(1, summaries.CountySummary.Count());
+            Assert.AreEqual(2, summaries.TotalPagesCount);
+            var county = summaries.CountySummary.First();
             Assert.AreEqual("Harris, Texas, US", county.County);
             Assert.AreEqual(1262246, county.Cases.Minimum.Count);
             Assert.AreEqual(new DateTime(2023, 2, 1), county.Cases.Minimum.Date);
@@ -76,11 +79,12 @@ namespace CovidServiceTest
         }
 
         [TestMethod]
-        public void GetSummary_InvalidRange_ReturnsEmptyList()
+        public void GetSummary_InvalidPageIndex_ReturnsEmptyList()
         {
             var summaries = _countyService.GetSummary("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
-            Assert.AreEqual(0, summaries.Count());
+            Assert.AreEqual(0, summaries.CountySummary.Count());
+            Assert.AreEqual(2, summaries.TotalPagesCount);
         }
 
 
@@ -89,7 +93,8 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
-            Assert.AreEqual(0, summaries.Count());
+            Assert.AreEqual(0, summaries.CountySummary.Count());
+            Assert.AreEqual(0, summaries.TotalPagesCount);
         }
 
         [TestMethod]
@@ -97,7 +102,8 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
 
-            Assert.AreEqual(0, summaries.Count());
+            Assert.AreEqual(0, summaries.CountySummary.Count());
+            Assert.AreEqual(0, summaries.TotalPagesCount);
         }
     }
 }

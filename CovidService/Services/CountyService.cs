@@ -14,7 +14,7 @@ namespace CovidService.Services
         {
             _repository = repository;
         }
-        public IEnumerable<CountySummary> GetSummary(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public PagedCountySummary GetSummary(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             var summaries = new List<CountySummary>();
 
@@ -22,6 +22,13 @@ namespace CovidService.Services
             // TODO This traverses the list of cases three times
             if (!String.IsNullOrEmpty(countyName))
                 counties = counties.Where(x => x.Name == countyName);
+
+            var countySummary = new PagedCountySummary()
+            {
+                CountySummary = summaries,
+                TotalPagesCount = counties.Count()
+            };
+
             counties = counties.Skip(pageIndex * pageSize)
                 .Take(pageSize);
 
@@ -31,7 +38,7 @@ namespace CovidService.Services
 
                 if (cases.Count() == 0)
                 {
-                    return summaries;
+                    break;
                 }
 
                 // TODO This is super ineffective, but short and passes array multiple times finding max and then date
@@ -62,7 +69,7 @@ namespace CovidService.Services
                 );
             }
 
-            return summaries;
+            return countySummary;
         }
         public Breakdown GetBreakDown()
         {
