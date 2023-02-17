@@ -1,5 +1,6 @@
 ﻿using CovidService.Controllers.Exceptions;
 using CovidService.Services.County;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -39,8 +40,29 @@ namespace CovidService.Controllers
         [HttpGet("Summary")]
         public PagedCountySummary GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
-            _logger.LogInformation("{}, {}, {}, {}, {}", county, startDate, endDate, pageIndex, pageSize);
+            ValidateInput(county, startDate, endDate, pageIndex, pageSize);
 
+            // TODO Output date only, currently it outputs date and time
+            return _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize);
+        }
+
+        [HttpGet("Breakdown")]
+        public PagedCountyBreakdown GetBreakdown(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) 
+        {
+            ValidateInput(county, startDate, endDate, pageIndex, pageSize);
+
+            return _countyService.GetBreakdown(county, startDate, endDate, pageIndex, pageSize);
+        }
+
+
+        // TODO Rate
+
+        [Route("/error")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult HandleError() => Problem();
+
+        private void ValidateInput(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        {
             if (endDate < startDate)
             {
                 _logger.LogError("Unexpected date range {}-{}", startDate, endDate);
@@ -58,17 +80,7 @@ namespace CovidService.Controllers
                 _logger.LogInformation("Page size {} is too big limiting to {}", pageSize, MaximumPageSize);
             }
 
-            // TODO Output date only, currently it outputs date and time
-            return _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize);
+            //_logger.LogInformation("{}, {}, {}, {}, {}", county, startDate, endDate, pageIndex, pageSize);
         }
-
-        // TODO Breakdown
-
-
-        // TODO Rate
-
-        [Route("/error")]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult HandleError() => Problem();
     }
 }
