@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CovidService.Services
+namespace CovidService.Services.County
 {
     public class CountyBreakdown
     {

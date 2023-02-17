@@ -1,5 +1,5 @@
 ﻿using CovidService.Controllers.Exceptions;
-using CovidService.Services;
+using CovidService.Services.County;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;

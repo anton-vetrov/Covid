@@ -1,5 +1,5 @@
 ﻿using CovidService.Repositories;
-using CovidService.Services;
+using CovidService.Services.County;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Namotion.Reflection;
 using System;

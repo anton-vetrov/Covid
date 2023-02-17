@@ -1,13 +1,10 @@
-﻿using CovidService.Models;
-using CovidService.Repositories;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CovidService.Services
+using CovidService.Repositories;
+
+namespace CovidService.Services.County
 {
     public class CountyService : ICountyService
     {
@@ -21,11 +18,11 @@ namespace CovidService.Services
         {
             var summaries = new List<CountySummary>();
 
-            IEnumerable<County> counties = _repository.GetCounties();
+            IEnumerable<CovidService.Models.County> counties = _repository.GetCounties();
 
-            if (!String.IsNullOrEmpty(countyName))
+            if (!string.IsNullOrEmpty(countyName))
                 counties = counties.Where(x => x.Name == countyName);
-            
+
             var paged = new PagedCountySummary()
             {
                 CountySummaries = summaries,
@@ -77,9 +74,9 @@ namespace CovidService.Services
         {
             var countyBreakdowns = new List<CountyBreakdown>();
 
-            IEnumerable<County> counties = _repository.GetCounties();
+            IEnumerable<CovidService.Models.County> counties = _repository.GetCounties();
 
-            if (!String.IsNullOrEmpty(countyName))
+            if (!string.IsNullOrEmpty(countyName))
                 counties = counties.Where(x => x.Name == countyName);
             var paged = new PagedCountyBreakdown()
             {
@@ -98,16 +95,16 @@ namespace CovidService.Services
 
                 var breakdown = cases.Zip(
                     cases.Skip(1),
-                    (x, y) => new DateBreakdown() 
+                    (x, y) => new DateBreakdown()
                     {
-                        NewCases = (y.Value.Count - x.Value.Count),
+                        NewCases = y.Value.Count - x.Value.Count,
                         TotalCases = y.Value.Count,
                         Date = y.Key
                     }
                 );
 
-                countyBreakdowns.Add(new CountyBreakdown() 
-                { 
+                countyBreakdowns.Add(new CountyBreakdown()
+                {
                     County = county.CombinedKey,
                     DateBreakdowns = breakdown
                 });
@@ -117,7 +114,7 @@ namespace CovidService.Services
         }
         public PagedRate GetRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
-            throw (new NotImplementedException());
+            throw new NotImplementedException();
         }
 
     }

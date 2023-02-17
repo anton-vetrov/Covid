@@ -1,4 +1,4 @@
-﻿namespace CovidService.Services
+﻿namespace CovidService.Services.County
 {
     public class CountySummary
     {

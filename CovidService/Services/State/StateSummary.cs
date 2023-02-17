@@ -1,4 +1,4 @@
-﻿namespace CovidService.Services
+﻿namespace CovidService.Services.State
 {
     public class StateSummary
     {

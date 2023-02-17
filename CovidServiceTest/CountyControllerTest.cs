@@ -1,7 +1,7 @@
 ﻿using CovidService.Controllers;
 using CovidService.Controllers.Exceptions;
 using CovidService.Repositories;
-using CovidService.Services;
+using CovidService.Services.County;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
