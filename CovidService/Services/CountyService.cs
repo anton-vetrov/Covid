@@ -1,6 +1,8 @@
 ﻿using CovidService.Models;
 using CovidService.Repositories;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,24 +16,23 @@ namespace CovidService.Services
         {
             _repository = repository;
         }
+        // TODO This traverses the list of cases three times
         public PagedCountySummary GetSummary(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             var summaries = new List<CountySummary>();
 
             IEnumerable<County> counties = _repository.GetCounties();
-            // TODO This traverses the list of cases three times
+
             if (!String.IsNullOrEmpty(countyName))
                 counties = counties.Where(x => x.Name == countyName);
-
-            var countySummary = new PagedCountySummary()
+            
+            var paged = new PagedCountySummary()
             {
-                CountySummary = summaries,
+                CountySummaries = summaries,
                 TotalPagesCount = counties.Count()
             };
 
-            counties = counties.Skip(pageIndex * pageSize)
-                .Take(pageSize);
-
+            counties = counties.Skip(pageIndex * pageSize).Take(pageSize);
             foreach (var county in counties)
             {
                 var cases = county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
@@ -68,14 +69,53 @@ namespace CovidService.Services
                     }
                 );
             }
+            //}
 
-            return countySummary;
+            return paged;
         }
-        public Breakdown GetBreakDown()
+        public PagedCountyBreakdown GetBreakdown(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
-            throw (new NotImplementedException());
+            var countyBreakdowns = new List<CountyBreakdown>();
+
+            IEnumerable<County> counties = _repository.GetCounties();
+
+            if (!String.IsNullOrEmpty(countyName))
+                counties = counties.Where(x => x.Name == countyName);
+            var paged = new PagedCountyBreakdown()
+            {
+                CountyBreakdowns = countyBreakdowns,
+                TotalPagesCount = counties.Count()
+            };
+
+            counties = counties.Skip(pageIndex * pageSize).Take(pageSize);
+            foreach (var county in counties)
+            {
+                var cases = county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
+                if (cases.Count() == 0)
+                {
+                    break;
+                }
+
+                var breakdown = cases.Zip(
+                    cases.Skip(1),
+                    (x, y) => new DateBreakdown() 
+                    {
+                        NewCases = (y.Value.Count - x.Value.Count),
+                        TotalCases = y.Value.Count,
+                        Date = y.Key
+                    }
+                );
+
+                countyBreakdowns.Add(new CountyBreakdown() 
+                { 
+                    County = county.CombinedKey,
+                    DateBreakdowns = breakdown
+                });
+            }
+
+            return paged;
         }
-        public Rate GetRate()
+        public PagedRate GetRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             throw (new NotImplementedException());
         }

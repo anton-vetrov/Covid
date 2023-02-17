@@ -43,7 +43,7 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
 
-            Assert.AreEqual(3258, summaries.CountySummary.Count());
+            Assert.AreEqual(3258, summaries.CountySummaries.Count());
             Assert.AreEqual(3258, summaries.TotalPagesCount);
         }
 
@@ -52,9 +52,9 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
 
-            Assert.AreEqual(10, summaries.CountySummary.Count());
+            Assert.AreEqual(10, summaries.CountySummaries.Count());
             Assert.AreEqual(3258, summaries.TotalPagesCount);
-            var county = summaries.CountySummary.First();
+            var county = summaries.CountySummaries.First();
             Assert.AreEqual("Chilton, Alabama, US", county.County);
             Assert.AreEqual(12876, county.Cases.Minimum.Count);
             Assert.AreEqual(new DateTime(2023, 2, 1), county.Cases.Minimum.Date);
@@ -68,9 +68,9 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
 
-            Assert.AreEqual(1, summaries.CountySummary.Count());
+            Assert.AreEqual(1, summaries.CountySummaries.Count());
             Assert.AreEqual(2, summaries.TotalPagesCount);
-            var county = summaries.CountySummary.First();
+            var county = summaries.CountySummaries.First();
             Assert.AreEqual("Harris, Texas, US", county.County);
             Assert.AreEqual(1262246, county.Cases.Minimum.Count);
             Assert.AreEqual(new DateTime(2023, 2, 1), county.Cases.Minimum.Date);
@@ -83,7 +83,7 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
-            Assert.AreEqual(0, summaries.CountySummary.Count());
+            Assert.AreEqual(0, summaries.CountySummaries.Count());
             Assert.AreEqual(2, summaries.TotalPagesCount);
         }
 
@@ -93,7 +93,7 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
-            Assert.AreEqual(0, summaries.CountySummary.Count());
+            Assert.AreEqual(0, summaries.CountySummaries.Count());
             Assert.AreEqual(0, summaries.TotalPagesCount);
         }
 
@@ -102,8 +102,83 @@ namespace CovidServiceTest
         {
             var summaries = _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
 
-            Assert.AreEqual(0, summaries.CountySummary.Count());
+            Assert.AreEqual(0, summaries.CountySummaries.Count());
             Assert.AreEqual(0, summaries.TotalPagesCount);
+        }
+
+        [TestMethod]
+        public void GetBreakDown_EmptyName_ReturnsAllTheCounties()
+        {
+            var breakdowns = _countyService.GetBreakdown("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
+
+            Assert.AreEqual(3258, breakdowns.CountyBreakdowns.Count());
+            Assert.AreEqual(3258, breakdowns.TotalPagesCount);
+            var countyBreakdowns = breakdowns.CountyBreakdowns.ToArray();
+            Assert.AreEqual(12, countyBreakdowns[0].DateBreakdowns.Count());
+            Assert.AreEqual("Autauga, Alabama, US", countyBreakdowns[0].County);
+            var breakdown = countyBreakdowns[0].DateBreakdowns.ToArray()[6];
+            Assert.AreEqual(new DateTime(2023, 2, 8), breakdown.Date);
+            Assert.AreEqual(19630, breakdown.TotalCases);
+            Assert.AreEqual(19630 - 19530, breakdown.NewCases);
+        }
+
+        [TestMethod]
+        public void GetBreakDown_EmptyName_ReturnsSecondPage()
+        {
+            var breakdowns = _countyService.GetBreakdown("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
+
+            Assert.AreEqual(10, breakdowns.CountyBreakdowns.Count());
+            Assert.AreEqual(3258, breakdowns.TotalPagesCount);
+            var county = breakdowns.CountyBreakdowns.First();
+            Assert.AreEqual("Chilton, Alabama, US", county.County);
+            var breakdown = county.DateBreakdowns.ToArray()[6];
+            Assert.AreEqual(new DateTime(2023, 2, 8), breakdown.Date);
+            Assert.AreEqual(12905, breakdown.TotalCases);
+            Assert.AreEqual(12905 - 12876, breakdown.NewCases);
+        }
+
+
+        [TestMethod]
+        public void GetBreakDown_ValidName_ReturnsFirstPage()
+        {
+            var breakdowns = _countyService.GetBreakdown("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
+
+            Assert.AreEqual(1, breakdowns.CountyBreakdowns.Count());
+            Assert.AreEqual(2, breakdowns.TotalPagesCount);
+            var county = breakdowns.CountyBreakdowns.First();
+            Assert.AreEqual("Harris, Texas, US", county.County);
+            var breakdown = county.DateBreakdowns.ToArray()[7];
+            Assert.AreEqual(new DateTime(2023, 2, 9), breakdown.Date);
+            Assert.AreEqual(1265347, breakdown.TotalCases);
+            Assert.AreEqual(1265347 - 1262246, breakdown.NewCases);
+        }
+
+        [TestMethod]
+        public void GetBreakDown_InvalidPageIndex_ReturnsEmptyList()
+        {
+            var breakdowns = _countyService.GetBreakdown("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+
+            Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
+            Assert.AreEqual(2, breakdowns.TotalPagesCount);
+        }
+
+
+        [TestMethod]
+        public void GetBreakDown_CountyNotFound_ReturnsEmptyList()
+        {
+            var breakdowns = _countyService.GetBreakdown("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+
+            Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
+            Assert.AreEqual(0, breakdowns.TotalPagesCount);
+        }
+
+        [TestMethod]
+        public void GetBreakDown_InvalidPaging_ReturnsEmptyList()
+        {
+            var breakdowns = _countyService.GetBreakdown("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
+
+            Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
+            Assert.AreEqual(0, breakdowns.TotalPagesCount);
         }
     }
 }

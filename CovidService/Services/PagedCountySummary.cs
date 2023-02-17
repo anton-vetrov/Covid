@@ -5,7 +5,7 @@ namespace CovidService.Services
 {
     public class PagedCountySummary
     {
-        public IEnumerable<CountySummary> CountySummary { get; set; }
+        public IEnumerable<CountySummary> CountySummaries { get; set; }
         public int TotalPagesCount { get; set; }
 
     }

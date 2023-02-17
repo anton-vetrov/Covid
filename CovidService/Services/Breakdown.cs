@@ -2,7 +2,7 @@
 
 namespace CovidService.Services
 {
-    public class Breakdown
+    public class DateBreakdown
     {
         public DateTime Date { get; set; }
         public int NewCases { get; set; }

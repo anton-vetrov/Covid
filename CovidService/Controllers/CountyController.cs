@@ -27,6 +27,15 @@ namespace CovidService.Controllers
             _logger.LogInformation("_countyService={0}", _countyService);
         }
 
+        /// <summary>
+        /// Throws UnexpectedInputException
+        /// </summary>
+        /// <param name="county"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet("Summary")]
         public PagedCountySummary GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
@@ -54,6 +63,8 @@ namespace CovidService.Controllers
         }
 
         // TODO Breakdown
+
+
         // TODO Rate
 
         [Route("/error")]
