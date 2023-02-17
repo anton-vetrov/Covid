@@ -6,7 +6,7 @@ namespace CovidService.Models
 {
     public class County
     {
-        // This is Combined_Key
+        // This is UID
         public int Id { get; set; }
 
         public string Name { get; set; }
