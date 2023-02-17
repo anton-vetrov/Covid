@@ -46,6 +46,20 @@ namespace CovidServiceTest
             Assert.AreEqual(3258, summaries.Count());
         }
 
+        [TestMethod]
+        public void GetSummary_EmptyName_ReturnsSecondPage()
+        {
+            var summaries = _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
+
+            Assert.AreEqual(10, summaries.Count());
+            var county = summaries.First();
+            Assert.AreEqual("Chilton, Alabama, US", county.County);
+            Assert.AreEqual(12876, county.Cases.Minimum.Count);
+            Assert.AreEqual(new DateTime(2023, 2, 1), county.Cases.Minimum.Date);
+            Assert.AreEqual(12905, county.Cases.Maximum.Count);
+            Assert.AreEqual(new DateTime(2023, 2, 8), county.Cases.Maximum.Date);
+        }
+
 
         [TestMethod]
         public void GetSummary_ValidName_ReturnsFirstPage()

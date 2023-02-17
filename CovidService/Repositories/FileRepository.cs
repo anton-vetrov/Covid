@@ -124,13 +124,12 @@ namespace CovidService.Repositories
                 }
             }
         }
-        // TODO Add paging and selection
+
         public List<State> GetStates()
         {
             return _countries[US].States.Values.ToList();
         }
 
-        // TODO Add paging and selection
         public List<County> GetCounties()
         {
             var counties = new List<County>();

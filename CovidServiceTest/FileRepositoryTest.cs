@@ -24,5 +24,17 @@ namespace CovidServiceTest
             }
         }
 
+        [TestMethod]
+        public void GetCounties_ReturnsList()
+        {
+            using (var memoryStream = new MemoryStream(Properties.Resources.Covid19ConfirmedUS))
+            {
+                var file = new FileRepository(memoryStream);
+                var counties = file.GetCounties();
+
+                Assert.AreEqual(3258, counties.Count());
+                Assert.AreEqual("Barbour, Alabama, US", counties[2].CombinedKey);
+            }
+        }
     }
 }
