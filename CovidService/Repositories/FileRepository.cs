@@ -15,7 +15,7 @@ namespace CovidService.Repositories
 {
     public class FileRepository : IRepository
     {
-        // TODO Hardcoded that to US contry only
+        // TODO Hardcoded that to US country only
         private const int US = 840;
 
         Dictionary<int, Country> _countries;
@@ -92,6 +92,11 @@ namespace CovidService.Repositories
                                     case "iso2":
                                         country.Name = csv[columnIndex];
                                         break;
+                                    case "Country_Region":
+                                        country.CountryRegion = csv[columnIndex];
+                                        break;
+
+
                                 }
                             }
                             else

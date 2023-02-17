@@ -39,7 +39,16 @@ namespace CovidServiceTest
 
 
         [TestMethod]
-        public void GetSummary_ReturnsList()
+        public void GetSummary_EmptyName_ReturnsAllTheCounties()
+        {
+            var summaries = _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
+
+            Assert.AreEqual(3258, summaries.Count());
+        }
+
+
+        [TestMethod]
+        public void GetSummary_ValidName_ReturnsFirstPage()
         {
             var summaries = _countyService.GetSummary("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
 
@@ -52,5 +61,29 @@ namespace CovidServiceTest
             Assert.AreEqual(new DateTime(2023, 2, 9), county.Cases.Maximum.Date);
         }
 
+        [TestMethod]
+        public void GetSummary_InvalidRange_ReturnsEmptyList()
+        {
+            var summaries = _countyService.GetSummary("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+
+            Assert.AreEqual(0, summaries.Count());
+        }
+
+
+        [TestMethod]
+        public void GetSummary_CountyNotFound_ReturnsEmptyList()
+        {
+            var summaries = _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+
+            Assert.AreEqual(0, summaries.Count());
+        }
+
+        [TestMethod]
+        public void GetSummary_InvalidPaging_ReturnsEmptyList()
+        {
+            var summaries = _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
+
+            Assert.AreEqual(0, summaries.Count());
+        }
     }
 }

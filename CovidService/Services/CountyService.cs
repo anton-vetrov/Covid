@@ -1,4 +1,5 @@
-﻿using CovidService.Repositories;
+﻿using CovidService.Models;
+using CovidService.Repositories;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
@@ -17,15 +18,21 @@ namespace CovidService.Services
         {
             var summaries = new List<CountySummary>();
 
+            IEnumerable<County> counties = _repository.GetCounties();
             // TODO This traverses the list of cases three times
-            var counties = _repository.GetCounties()
-                .Where(x => x.Name == countyName)
-                .Skip(pageIndex * pageSize)
+            if (!String.IsNullOrEmpty(countyName))
+                counties = counties.Where(x => x.Name == countyName);
+            counties = counties.Skip(pageIndex * pageSize)
                 .Take(pageSize);
 
             foreach (var county in counties)
             {
                 var cases = county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
+
+                if (cases.Count() == 0)
+                {
+                    return summaries;
+                }
 
                 // TODO This is super ineffective, but short and passes array multiple times finding max and then date
                 var max = cases.Select(x => x.Value.Count).Max();

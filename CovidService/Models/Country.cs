@@ -15,6 +15,7 @@ namespace CovidService.Models
         public int Id { get; set; }
 
         public string Name { get; set; }
+        public string CountryRegion { get; set; }
 
         public Dictionary<string, State> States { get; set; }
     }
