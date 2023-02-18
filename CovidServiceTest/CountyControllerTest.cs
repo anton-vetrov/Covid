@@ -63,6 +63,18 @@ namespace CovidServiceTest
         }
 
         [TestMethod]
+        public void GetSummary_BlankLocation_Throws()
+        {
+
+
+            var controller = new CountyController(_logger, _countyServiceMock.Object);
+
+            Assert.ThrowsException<BlankCountException>(
+                () => controller.GetSummary("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
+            );
+        }
+
+        [TestMethod]
         public void GetBreakdown_Returns()
         {
             var controller = new CountyController(_logger, _countyServiceMock.Object);
@@ -96,6 +108,18 @@ namespace CovidServiceTest
         }
 
         [TestMethod]
+        public void GetBreakdown_BlankLocation_Throws()
+        {
+
+
+            var controller = new CountyController(_logger, _countyServiceMock.Object);
+
+            Assert.ThrowsException<BlankCountException>(
+                () => controller.GetBreakdown("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
+            );
+        }
+
+        [TestMethod]
         public void GetRate_Returns()
         {
             var controller = new CountyController(_logger, _countyServiceMock.Object);
@@ -125,6 +149,18 @@ namespace CovidServiceTest
 
             Assert.ThrowsException<UnexpectedInputException>(
                 () => controller.GetRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
+            );
+        }
+
+        [TestMethod]
+        public void GetRate_BlankLocation_Throws()
+        {
+
+
+            var controller = new CountyController(_logger, _countyServiceMock.Object);
+
+            Assert.ThrowsException<BlankCountException>(
+                () => controller.GetRate("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
     }

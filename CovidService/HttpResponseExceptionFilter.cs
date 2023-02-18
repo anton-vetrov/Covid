@@ -27,6 +27,21 @@ namespace CovidService
 
                 context.ExceptionHandled = true;
             }
+
+            if (context.Exception is BlankCountException blankLocationException)
+            {
+                context.Result = new ObjectResult(
+                    new
+                    {
+                        Message = blankLocationException.Message,
+                    }
+                )
+                {
+                    StatusCode = blankLocationException.StatusCode
+                };
+
+                context.ExceptionHandled = true;
+            }
         }
     }
 }

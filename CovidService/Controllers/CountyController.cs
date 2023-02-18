@@ -68,6 +68,12 @@ namespace CovidService.Controllers
 
         private void ValidateInput(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
+            if (String.IsNullOrEmpty(county))
+            {
+                _logger.LogError("The location is blank");
+                throw (new BlankCountException());
+            }
+
             if (endDate < startDate)
             {
                 _logger.LogError("Unexpected date range {}-{}", startDate, endDate);
