@@ -54,7 +54,6 @@ namespace CovidService.Controllers
             return _countyService.GetBreakdown(county, startDate, endDate, pageIndex, pageSize);
         }
 
-
         // TODO Rate
 
         [Route("/error")]
