@@ -109,7 +109,7 @@ namespace CovidServiceTest
         [TestMethod]
         public void GetBreakDown_EmptyName_ReturnsAllTheCounties()
         {
-            var breakdowns = _countyService.GetBreakdown("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
+            var breakdowns = _countyService.GetBreakdownAndRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
 
             Assert.AreEqual(3258, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(3258, breakdowns.TotalPagesCount);
@@ -120,12 +120,13 @@ namespace CovidServiceTest
             Assert.AreEqual(new DateTime(2023, 2, 8), breakdown.Date);
             Assert.AreEqual(19630, breakdown.TotalCases);
             Assert.AreEqual(19630 - 19530, breakdown.NewCases);
+            Assert.AreEqual((19630.0 - 19530.0) * 100.0 / 19530.0, breakdown.RatePercentage);
         }
 
         [TestMethod]
         public void GetBreakDown_EmptyName_ReturnsSecondPage()
         {
-            var breakdowns = _countyService.GetBreakdown("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
+            var breakdowns = _countyService.GetBreakdownAndRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
 
             Assert.AreEqual(10, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(3258, breakdowns.TotalPagesCount);
@@ -135,13 +136,14 @@ namespace CovidServiceTest
             Assert.AreEqual(new DateTime(2023, 2, 8), breakdown.Date);
             Assert.AreEqual(12905, breakdown.TotalCases);
             Assert.AreEqual(12905 - 12876, breakdown.NewCases);
+            Assert.AreEqual((12905.0 - 12876.0) * 100.0 / 12876.0, breakdown.RatePercentage);
         }
 
 
         [TestMethod]
         public void GetBreakDown_ValidName_ReturnsFirstPage()
         {
-            var breakdowns = _countyService.GetBreakdown("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
+            var breakdowns = _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
 
             Assert.AreEqual(1, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(2, breakdowns.TotalPagesCount);
@@ -151,12 +153,13 @@ namespace CovidServiceTest
             Assert.AreEqual(new DateTime(2023, 2, 9), breakdown.Date);
             Assert.AreEqual(1265347, breakdown.TotalCases);
             Assert.AreEqual(1265347 - 1262246, breakdown.NewCases);
+            Assert.AreEqual((1265347.0 - 1262246.0)*100.0/1262246.0, breakdown.RatePercentage);
         }
 
         [TestMethod]
         public void GetBreakDown_InvalidPageIndex_ReturnsEmptyList()
         {
-            var breakdowns = _countyService.GetBreakdown("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+            var breakdowns = _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
             Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(2, breakdowns.TotalPagesCount);
@@ -166,7 +169,7 @@ namespace CovidServiceTest
         [TestMethod]
         public void GetBreakDown_CountyNotFound_ReturnsEmptyList()
         {
-            var breakdowns = _countyService.GetBreakdown("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+            var breakdowns = _countyService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
             Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(0, breakdowns.TotalPagesCount);
@@ -175,7 +178,7 @@ namespace CovidServiceTest
         [TestMethod]
         public void GetBreakDown_InvalidPaging_ReturnsEmptyList()
         {
-            var breakdowns = _countyService.GetBreakdown("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
+            var breakdowns = _countyService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
 
             Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(0, breakdowns.TotalPagesCount);

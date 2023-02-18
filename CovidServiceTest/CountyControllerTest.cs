@@ -23,7 +23,7 @@ namespace CovidServiceTest
             _countyServiceMock = new Mock<ICountyService>();
             _countyServiceMock.Setup(x => x.GetSummary(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(new PagedCountySummary());
-            _countyServiceMock.Setup(x => x.GetBreakdown(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
+            _countyServiceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(new PagedCountyBreakdown());
         }
 
@@ -68,7 +68,7 @@ namespace CovidServiceTest
             var summary = controller.GetBreakdown("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10);
 
             Assert.IsNotNull(summary);
-            _countyServiceMock.Verify(x => x.GetBreakdown("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10), Times.Once());
+            _countyServiceMock.Verify(x => x.GetBreakdownAndRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10), Times.Once());
         }
 
         [TestMethod]

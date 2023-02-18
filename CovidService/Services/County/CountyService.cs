@@ -70,7 +70,7 @@ namespace CovidService.Services.County
 
             return paged;
         }
-        public PagedCountyBreakdown GetBreakdown(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public PagedCountyBreakdown GetBreakdownAndRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             var countyBreakdowns = new List<CountyBreakdown>();
 
@@ -99,6 +99,7 @@ namespace CovidService.Services.County
                     {
                         NewCases = y.Value.Count - x.Value.Count,
                         TotalCases = y.Value.Count,
+                        RatePercentage = (x.Value.Count == 0)? 0: ((double)(y.Value.Count - x.Value.Count)) * 100.00 / ((double)x.Value.Count),
                         Date = y.Key
                     }
                 );
@@ -112,10 +113,5 @@ namespace CovidService.Services.County
 
             return paged;
         }
-        public PagedCountyRate GetRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

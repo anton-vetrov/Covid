@@ -51,7 +51,7 @@ namespace CovidService.Controllers
         {
             ValidateInput(county, startDate, endDate, pageIndex, pageSize);
 
-            return _countyService.GetBreakdown(county, startDate, endDate, pageIndex, pageSize);
+            return _countyService.GetBreakdownAndRate(county, startDate, endDate, pageIndex, pageSize);
         }
 
         // TODO Rate
