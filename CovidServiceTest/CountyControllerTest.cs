@@ -69,7 +69,7 @@ namespace CovidServiceTest
 
             var controller = new CountyController(_logger, _countyServiceMock.Object);
 
-            Assert.ThrowsException<BlankCountException>(
+            Assert.ThrowsException<BlankCountyException>(
                 () => controller.GetSummary("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
@@ -114,7 +114,7 @@ namespace CovidServiceTest
 
             var controller = new CountyController(_logger, _countyServiceMock.Object);
 
-            Assert.ThrowsException<BlankCountException>(
+            Assert.ThrowsException<BlankCountyException>(
                 () => controller.GetBreakdown("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
@@ -159,7 +159,7 @@ namespace CovidServiceTest
 
             var controller = new CountyController(_logger, _countyServiceMock.Object);
 
-            Assert.ThrowsException<BlankCountException>(
+            Assert.ThrowsException<BlankCountyException>(
                 () => controller.GetRate("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }

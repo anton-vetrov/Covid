@@ -28,7 +28,7 @@ namespace CovidService
                 context.ExceptionHandled = true;
             }
 
-            if (context.Exception is BlankCountException blankLocationException)
+            if (context.Exception is BlankCountyException blankLocationException)
             {
                 context.Result = new ObjectResult(
                     new

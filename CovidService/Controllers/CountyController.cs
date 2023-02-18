@@ -71,7 +71,7 @@ namespace CovidService.Controllers
             if (String.IsNullOrEmpty(county))
             {
                 _logger.LogError("The location is blank");
-                throw (new BlankCountException());
+                throw (new BlankCountyException());
             }
 
             if (endDate < startDate)
