@@ -183,5 +183,22 @@ namespace CovidServiceTest
             Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(0, breakdowns.TotalPagesCount);
         }
+
+        [TestMethod]
+        public void GetRate_EmptyName_ReturnsAllTheCounties()
+        {
+            var rates = _countyService.GetRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
+
+            Assert.AreEqual(3258, rates.CountyRates.Count());
+            Assert.AreEqual(3258, rates.TotalPagesCount);
+            var countyRate = rates.CountyRates.ToArray();
+            Assert.AreEqual(12, countyRate[0].DateRates.Count());
+            Assert.AreEqual("Autauga, Alabama, US", countyRate[0].County);
+            var dateRate = countyRate[0].DateRates.ToArray()[6];
+            Assert.AreEqual(new DateTime(2023, 2, 8), dateRate.Date);
+            Assert.AreEqual((19630.0 - 19530.0) * 100.0 / 19530.0, dateRate.Percentage);
+        }
+
+        // TODO More tests for GetRate, eve though it is uses GetBreakdownAndRate under the hood
     }
 }

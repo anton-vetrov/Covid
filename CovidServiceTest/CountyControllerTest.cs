@@ -25,6 +25,8 @@ namespace CovidServiceTest
                 .Returns(new PagedCountySummary());
             _countyServiceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(new PagedCountyBreakdown());
+            _countyServiceMock.Setup(x => x.GetRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Returns(new PagedCountyRate());
         }
 
         [TestMethod]
@@ -90,6 +92,39 @@ namespace CovidServiceTest
 
             Assert.ThrowsException<UnexpectedInputException>(
                 () => controller.GetBreakdown("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
+            );
+        }
+
+        [TestMethod]
+        public void GetRate_Returns()
+        {
+            var controller = new CountyController(_logger, _countyServiceMock.Object);
+
+            var summary = controller.GetRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10);
+
+            Assert.IsNotNull(summary);
+            _countyServiceMock.Verify(x => x.GetRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10), Times.Once());
+        }
+
+        [TestMethod]
+        public void GetRate_InvalidDateRange_Throws()
+        {
+            var controller = new CountyController(_logger, _countyServiceMock.Object);
+
+            Assert.ThrowsException<UnexpectedInputException>(
+                () => controller.GetRate("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01), 0, 0)
+            );
+        }
+
+        [TestMethod]
+        public void GetRate_InvalidPageSize_Throws()
+        {
+
+
+            var controller = new CountyController(_logger, _countyServiceMock.Object);
+
+            Assert.ThrowsException<UnexpectedInputException>(
+                () => controller.GetRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
     }

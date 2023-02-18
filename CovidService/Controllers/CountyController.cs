@@ -54,7 +54,13 @@ namespace CovidService.Controllers
             return _countyService.GetBreakdownAndRate(county, startDate, endDate, pageIndex, pageSize);
         }
 
-        // TODO Rate
+        [HttpGet("Rate")]
+        public PagedCountyRate GetRate(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        {
+            ValidateInput(county, startDate, endDate, pageIndex, pageSize);
+
+            return _countyService.GetRate(county, startDate, endDate, pageIndex, pageSize);
+        }
 
         [Route("/error")]
         [ApiExplorerSettings(IgnoreApi = true)]

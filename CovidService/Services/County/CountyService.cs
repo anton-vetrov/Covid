@@ -113,5 +113,26 @@ namespace CovidService.Services.County
 
             return paged;
         }
+
+        public PagedCountyRate GetRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        {
+            var breakdown = GetBreakdownAndRate(countyName, startDate, endDate, pageIndex, pageSize);
+
+            var paged = new PagedCountyRate()
+            {
+                CountyRates = breakdown.CountyBreakdowns
+                    .Select(x => new CountyRate() {
+                        County = x.County,
+                        DateRates = x.DateBreakdowns.Select(dateBreakdown => new DateRate() {
+                            Date = dateBreakdown.Date,
+                            Percentage = dateBreakdown.RatePercentage
+                        })
+                    }),
+                TotalPagesCount = breakdown.TotalPagesCount
+            };
+
+            return paged;
+        }
+
     }
 }
