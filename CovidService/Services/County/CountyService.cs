@@ -112,7 +112,7 @@ namespace CovidService.Services.County
 
             return paged;
         }
-        public PagedRate GetRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public PagedCountyRate GetRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             throw new NotImplementedException();
         }
