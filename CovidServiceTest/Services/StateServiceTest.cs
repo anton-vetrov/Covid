@@ -7,6 +7,8 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using CovidService.Services.County.Extensions;
+using CovidService.Models;
+using CovidService.Services.State;
 
 namespace CovidServiceTest.Services
 {
@@ -72,6 +74,60 @@ namespace CovidServiceTest.Services
 
             Assert.AreEqual(null, summary);
         }
-    }
 
+        [TestMethod]
+        public void GetBreakdownAndRate_ValidStateName_Returns()
+        {
+            var stateBreakdown = _stateService.GetBreakdownAndRate("Alabama", new DateTime(2023, 02, 07), new DateTime(2023, 02, 13));
+
+            Assert.AreEqual("Alabama", stateBreakdown.State);
+            var breakdown = stateBreakdown.DateBreakdowns.First();
+            Assert.AreEqual(new DateTime(2023, 02, 07).AddDays(1), breakdown.Date);
+            Assert.AreEqual(1627670, breakdown.TotalCases);
+            Assert.AreEqual(1627670 - 1617850, breakdown.NewCases);
+            Assert.AreEqual((1627670.0 - 1617850.0) * 100.0 / 1627670.0, breakdown.RatePercentage);
+        }
+
+        [TestMethod]
+        public void GetBreakdownAndRate_ValidStateNameBlankRange_ReturnsAll()
+        {
+            var stateBreakdown = _stateService.GetBreakdownAndRate("Alabama", StatExtension._blankDateTime, StatExtension._blankDateTime);
+
+            Assert.AreEqual("Alabama", stateBreakdown.State);
+            var breakdown = stateBreakdown.DateBreakdowns.First();
+            Assert.AreEqual(new DateTime(2020, 1, 22).AddDays(1), breakdown.Date);
+            Assert.AreEqual(0, breakdown.TotalCases);
+            Assert.AreEqual(0, breakdown.NewCases);
+            Assert.AreEqual(0, breakdown.RatePercentage);
+
+            var lastBreakdown = stateBreakdown.DateBreakdowns.Last();
+            Assert.AreEqual(new DateTime(2023, 2, 13), lastBreakdown.Date);
+            Assert.AreEqual(1627670, lastBreakdown.TotalCases);
+            Assert.AreEqual(0, lastBreakdown.NewCases);
+            Assert.AreEqual(0, lastBreakdown.RatePercentage);
+        }
+
+        [TestMethod]
+        public void GetBreakdownAndRate_InvalidStateName_ReturnsNull()
+        {
+            var stateBreakdown = _stateService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
+
+            Assert.AreEqual(null, stateBreakdown);
+        }
+
+        [TestMethod]
+        public void GetRate_ValidStateName_Returns()
+        {
+            var rate = _stateService.GetRate("Alabama", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
+
+            Assert.AreEqual(12, rate.DateRates.Count());
+            Assert.AreEqual("Alabama", rate.State);
+            var dateRate = rate.DateRates.ToArray()[6];
+            Assert.AreEqual(new DateTime(2023, 2, 8), dateRate.Date);
+            Assert.AreEqual((1627670.0 - 1617850.0) * 100.0 / 1627670.0, dateRate.Percentage);
+        }
+
+        // TODO More tests for GetRate, even though it is uses GetBreakdownAndRate under the hood
+
+    }
 }

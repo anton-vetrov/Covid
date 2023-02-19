@@ -129,7 +129,7 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetBreakDown_EmptyName_ReturnsAllTheCounties()
+        public void GetBreakdownAndRate_EmptyName_ReturnsAllTheCounties()
         {
             var breakdowns = _countyService.GetBreakdownAndRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
 
@@ -146,7 +146,7 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetBreakDown_EmptyName_ReturnsSecondPage()
+        public void GetBreakdownAndRate_EmptyName_ReturnsSecondPage()
         {
             var breakdowns = _countyService.GetBreakdownAndRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
 
@@ -163,7 +163,7 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetBreakDown_ValidName_ReturnsFirstPage()
+        public void GetBreakdownAndRate_ValidName_ReturnsFirstPage()
         {
             var breakdowns = _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
 
@@ -180,7 +180,7 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetBreakDown_ValidNameBlankRange_ReturnsAll()
+        public void GetBreakdownAndRate_ValidNameBlankRange_ReturnsAll()
         {
             var breakdowns = _countyService.GetBreakdownAndRate("Harris", StatExtension._blankDateTime, StatExtension._blankDateTime, 1, 1);
 
@@ -196,7 +196,7 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetBreakDown_InvalidPageIndex_ReturnsEmptyList()
+        public void GetBreakdownAndRate_InvalidPageIndex_ReturnsEmptyList()
         {
             var breakdowns = _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
@@ -206,7 +206,7 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetBreakDown_CountyNotFound_ReturnsEmptyList()
+        public void GetBreakdownAndRate_CountyNotFound_ReturnsEmptyList()
         {
             var breakdowns = _countyService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
@@ -215,7 +215,7 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetBreakDown_InvalidPaging_ReturnsEmptyList()
+        public void GetBreakdownAndRate_InvalidPaging_ReturnsEmptyList()
         {
             var breakdowns = _countyService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
 
@@ -238,6 +238,6 @@ namespace CovidServiceTest.Services
             Assert.AreEqual((19630.0 - 19530.0) * 100.0 / 19530.0, dateRate.Percentage);
         }
 
-        // TODO More tests for GetRate, eve though it is uses GetBreakdownAndRate under the hood
+        // TODO More tests for GetRate, even though it is uses GetBreakdownAndRate under the hood
     }
 }

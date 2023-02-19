@@ -55,5 +55,40 @@ namespace CovidService.Services.County.Extensions
 
             return summaries;
         }
+
+        public static IEnumerable<CountyBreakdown> BreakdownAndRate(this IEnumerable<CovidService.Models.County> counties, DateTime startDate, DateTime endDate)
+        {
+            var countyBreakdowns = new List<CountyBreakdown>();
+            foreach (var county in counties)
+            {
+                var cases = (startDate == StatExtension._blankDateTime && endDate == StatExtension._blankDateTime)
+                    ? county.Cases
+                    : county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
+                if (cases.Count() == 0)
+                {
+                    break;
+                }
+
+                var breakdown = cases.Zip(
+                    cases.Skip(1),
+                    (x, y) => new DateBreakdown()
+                    {
+                        NewCases = y.Value.Count - x.Value.Count,
+                        TotalCases = y.Value.Count,
+                        RatePercentage = (x.Value.Count == 0) ? 0 : ((double)(y.Value.Count - x.Value.Count)) * 100.00 / ((double)x.Value.Count),
+                        Date = y.Key
+                    }
+                );
+
+                countyBreakdowns.Add(new CountyBreakdown()
+                {
+                    County = county.CombinedKey,
+                    DateBreakdowns = breakdown
+                });
+            }
+
+            return countyBreakdowns;
+        }
+
     }
 }
