@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations;
 using CovidService.Services;
 using CovidService.Controllers;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace CovidService.Repositories
 {
@@ -19,27 +20,51 @@ namespace CovidService.Repositories
     {
         private readonly ILogger<OnlineRepository> _logger;
 
-        IRepository _repository;
+        // TODO Eliminate this
+        IRepository _syncRepository = new FileRepository(new MemoryStream(Properties.Resources.Covid19ConfirmedUS));
 
-        public OnlineRepository(ILogger<OnlineRepository> logger)
+        IRepository _repository;
+        IGithubService _githubService;
+
+        public OnlineRepository(ILogger<OnlineRepository> logger, IGithubService githubService)
         {
             _logger = logger;
+            _githubService = githubService;
+        }
 
-            _logger.LogInformation("logger={0}", _logger);
-            using (var memoryStream = new MemoryStream(Properties.Resources.Covid19ConfirmedUS))
+        private static readonly object _lock = new Object();
+        /// <summary>
+        /// This avoids multiple parsings of the file. File repository may need to downlaod once a day
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        private IRepository GetFileRepository(Stream stream)
+        {
+            lock (_lock)
             {
-                _repository = new FileRepository(memoryStream);
+                if (_repository == null)
+                {
+                    _repository = new FileRepository(stream);
+                }
+
+                return _repository;
             }
         }
 
         public State GetState(string stateName)
         {
-            return _repository.GetState(stateName);
+            return _syncRepository.GetState(stateName);
+        }
+
+        public async Task<State> GetStateAsync(string stateName)
+        {
+            var stream = await _githubService.DownloadFile();
+            return GetFileRepository(stream).GetState(stateName);
         }
 
         public List<County> GetCounties()
         {
-            return _repository.GetCounties();
+            return _syncRepository.GetCounties();
         }
     }
 
