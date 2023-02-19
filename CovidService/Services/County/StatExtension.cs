@@ -8,7 +8,7 @@ namespace CovidService.Services.County.Extensions
 {
     public static class StatExtension
     {
-        private static DateTime _blankDateTime = new DateTime(0001, 01, 01);
+        public static DateTime _blankDateTime = new DateTime(0001, 01, 01);
 
         // TODO This traverses the list of cases three times
         public static IEnumerable<CountySummary> Summary(this IEnumerable<CovidService.Models.County> counties, DateTime startDate, DateTime endDate)
@@ -16,7 +16,9 @@ namespace CovidService.Services.County.Extensions
             var summaries = new List<CountySummary>();
             foreach (var county in counties)
             {
-                var cases = (startDate == _blankDateTime && endDate == _blankDateTime) ? county.Cases: county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
+                var cases = (startDate == _blankDateTime && endDate == _blankDateTime) 
+                    ? county.Cases
+                    : county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
 
                 if (cases.Count() == 0)
                 {

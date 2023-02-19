@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Linq;
+using CovidService.Services.County.Extensions;
 
 namespace CovidServiceTest.Services
 {
@@ -54,7 +55,7 @@ namespace CovidServiceTest.Services
         [TestMethod]
         public void GetSummary_ValidStateNameBlankRange_ReturnsAll()
         {
-            var summary = _stateService.GetSummary("Alabama", new DateTime(0001, 01, 01), new DateTime(0001, 01, 01));
+            var summary = _stateService.GetSummary("Alabama", StatExtension._blankDateTime, StatExtension._blankDateTime);
 
             Assert.AreEqual("Alabama", summary.State);
             Assert.AreEqual(10794.324637681162, summary.Cases.Average);

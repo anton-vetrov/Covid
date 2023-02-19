@@ -1,5 +1,7 @@
 ﻿using CovidService.Repositories;
 using CovidService.Services.County;
+using CovidService.Services.County.Extensions;
+using CovidService.Services.State;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Namotion.Reflection;
 using System;
@@ -84,6 +86,21 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
+        public void GetSummary_ValidNameBlankRange_ReturnsAll()
+        {
+            var summaries = _countyService.GetSummary("Harris", StatExtension._blankDateTime, StatExtension._blankDateTime, 0, 5);
+
+            Assert.AreEqual(2, summaries.CountySummaries.Count());
+            Assert.AreEqual(2, summaries.TotalPagesCount);
+            var county = summaries.CountySummaries.Last();
+            Assert.AreEqual("Harris, Texas, US", county.County);
+            Assert.AreEqual(0, county.Cases.Minimum.Count);
+            Assert.AreEqual(new DateTime(2020, 1, 22), county.Cases.Minimum.Date);
+            Assert.AreEqual(1265347, county.Cases.Maximum.Count);
+            Assert.AreEqual(new DateTime(2023, 2, 9), county.Cases.Maximum.Date);
+        }
+
+        [TestMethod]
         public void GetSummary_InvalidPageIndex_ReturnsEmptyList()
         {
             var summaries = _countyService.GetSummary("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
@@ -159,6 +176,23 @@ namespace CovidServiceTest.Services
             Assert.AreEqual(1265347, breakdown.TotalCases);
             Assert.AreEqual(1265347 - 1262246, breakdown.NewCases);
             Assert.AreEqual((1265347.0 - 1262246.0) * 100.0 / 1262246.0, breakdown.RatePercentage);
+        }
+
+
+        [TestMethod]
+        public void GetBreakDown_ValidNameBlankRange_ReturnsAll()
+        {
+            var breakdowns = _countyService.GetBreakdownAndRate("Harris", StatExtension._blankDateTime, StatExtension._blankDateTime, 1, 1);
+
+            Assert.AreEqual(1, breakdowns.CountyBreakdowns.Count());
+            Assert.AreEqual(2, breakdowns.TotalPagesCount);
+            var county = breakdowns.CountyBreakdowns.First();
+            Assert.AreEqual("Harris, Texas, US", county.County);
+            var breakdown = county.DateBreakdowns.ToArray()[0];
+            Assert.AreEqual(new DateTime(2020, 01, 22).AddDays(1), breakdown.Date);
+            Assert.AreEqual(0, breakdown.TotalCases);
+            Assert.AreEqual(0, breakdown.NewCases);
+            Assert.AreEqual(0, breakdown.RatePercentage);
         }
 
         [TestMethod]
