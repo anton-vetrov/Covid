@@ -39,12 +39,12 @@ namespace CovidService.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet("Summary")]
-        public PagedCountySummary GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public async Task<PagedCountySummary> GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             ValidateInput(county, startDate, endDate, pageIndex, pageSize);
 
             // TODO Output date only, currently it outputs date and time
-            var summary = _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize);
+            var summary = await _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize);
             if (summary.TotalPagesCount == 0)
                 throw (new CountyNotFoundException());
 
@@ -52,19 +52,19 @@ namespace CovidService.Controllers
         }
 
         [HttpGet("Breakdown")]
-        public PagedCountyBreakdown GetBreakdown(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) 
+        public async Task<PagedCountyBreakdown> GetBreakdown(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) 
         {
             ValidateInput(county, startDate, endDate, pageIndex, pageSize);
 
-            return _countyService.GetBreakdownAndRate(county, startDate, endDate, pageIndex, pageSize);
+            return await _countyService.GetBreakdownAndRate(county, startDate, endDate, pageIndex, pageSize);
         }
 
         [HttpGet("Rate")]
-        public PagedCountyRate GetRate(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public async Task<PagedCountyRate> GetRate(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             ValidateInput(county, startDate, endDate, pageIndex, pageSize);
 
-            return _countyService.GetRate(county, startDate, endDate, pageIndex, pageSize);
+            return await _countyService.GetRate(county, startDate, endDate, pageIndex, pageSize);
         }
 
         [Route("/error")]

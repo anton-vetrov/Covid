@@ -10,6 +10,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using CovidService.Services;
+using System.Threading.Tasks;
 
 namespace CovidService.Repositories
 {
@@ -124,12 +125,6 @@ namespace CovidService.Repositories
                 }
             }
         }
-
-        /// <summary>
-        ///         /// 
-        /// </summary>
-        /// <param name="stateName"></param>
-        /// <returns>State if found otherwise returns null</returns>
         public State GetState(string stateName)
         {
             State state;
@@ -150,6 +145,27 @@ namespace CovidService.Repositories
             }
 
             return counties;
+        }
+
+        public Task<State> GetStateAsync(string stateName)
+        {
+            State state;
+            _countries[US].States.TryGetValue(stateName, out state);
+
+            return Task.FromResult<State>(state);
+        }
+
+        public Task<List<County>> GetCountiesAsync()
+        {
+            var counties = new List<County>();
+
+            List<State> states = _countries[US].States.Values.ToList();
+            foreach (var state in states)
+            {
+                counties.AddRange(state.Counties.Values);
+            }
+
+            return Task.FromResult<List<County>>(counties);
         }
     }
 

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CovidServiceTest.Services
 {
@@ -46,18 +47,18 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetSummary_EmptyName_ReturnsAllTheCounties()
+        public async Task GetSummary_EmptyName_ReturnsAllTheCounties()
         {
-            var summaries = _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
+            var summaries = await _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
 
             Assert.AreEqual(3258, summaries.CountySummaries.Count());
             Assert.AreEqual(3258, summaries.TotalPagesCount);
         }
 
         [TestMethod]
-        public void GetSummary_EmptyName_ReturnsSecondPage()
+        public async Task GetSummary_EmptyName_ReturnsSecondPage()
         {
-            var summaries = _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
+            var summaries = await _countyService.GetSummary("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
 
             Assert.AreEqual(10, summaries.CountySummaries.Count());
             Assert.AreEqual(3258, summaries.TotalPagesCount);
@@ -71,9 +72,9 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetSummary_ValidName_ReturnsFirstPage()
+        public async Task GetSummary_ValidName_ReturnsFirstPage()
         {
-            var summaries = _countyService.GetSummary("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
+            var summaries = await _countyService.GetSummary("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
 
             Assert.AreEqual(1, summaries.CountySummaries.Count());
             Assert.AreEqual(2, summaries.TotalPagesCount);
@@ -86,9 +87,9 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetSummary_ValidNameBlankRange_ReturnsAll()
+        public async Task GetSummary_ValidNameBlankRange_ReturnsAll()
         {
-            var summaries = _countyService.GetSummary("Harris", StatExtension._blankDateTime, StatExtension._blankDateTime, 0, 5);
+            var summaries = await _countyService.GetSummary("Harris", StatExtension._blankDateTime, StatExtension._blankDateTime, 0, 5);
 
             Assert.AreEqual(2, summaries.CountySummaries.Count());
             Assert.AreEqual(2, summaries.TotalPagesCount);
@@ -101,9 +102,9 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetSummary_InvalidPageIndex_ReturnsEmptyList()
+        public async Task GetSummary_InvalidPageIndex_ReturnsEmptyList()
         {
-            var summaries = _countyService.GetSummary("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+            var summaries = await _countyService.GetSummary("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
             Assert.AreEqual(0, summaries.CountySummaries.Count());
             Assert.AreEqual(2, summaries.TotalPagesCount);
@@ -111,27 +112,27 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetSummary_CountyNotFound_ReturnsEmptyList()
+        public async Task GetSummary_CountyNotFound_ReturnsEmptyList()
         {
-            var summaries = _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+            var summaries = await _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
             Assert.AreEqual(0, summaries.CountySummaries.Count());
             Assert.AreEqual(0, summaries.TotalPagesCount);
         }
 
         [TestMethod]
-        public void GetSummary_InvalidPaging_ReturnsEmptyList()
+        public async Task GetSummary_InvalidPaging_ReturnsEmptyList()
         {
-            var summaries = _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
+            var summaries = await _countyService.GetSummary("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
 
             Assert.AreEqual(0, summaries.CountySummaries.Count());
             Assert.AreEqual(0, summaries.TotalPagesCount);
         }
 
         [TestMethod]
-        public void GetBreakdownAndRate_EmptyName_ReturnsAllTheCounties()
+        public async Task GetBreakdownAndRate_EmptyName_ReturnsAllTheCounties()
         {
-            var breakdowns = _countyService.GetBreakdownAndRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
+            var breakdowns = await _countyService.GetBreakdownAndRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
 
             Assert.AreEqual(3258, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(3258, breakdowns.TotalPagesCount);
@@ -146,9 +147,9 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetBreakdownAndRate_EmptyName_ReturnsSecondPage()
+        public async Task GetBreakdownAndRate_EmptyName_ReturnsSecondPage()
         {
-            var breakdowns = _countyService.GetBreakdownAndRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
+            var breakdowns = await _countyService.GetBreakdownAndRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 10);
 
             Assert.AreEqual(10, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(3258, breakdowns.TotalPagesCount);
@@ -163,9 +164,9 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetBreakdownAndRate_ValidName_ReturnsFirstPage()
+        public async Task GetBreakdownAndRate_ValidName_ReturnsFirstPage()
         {
-            var breakdowns = _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
+            var breakdowns = await _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 1);
 
             Assert.AreEqual(1, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(2, breakdowns.TotalPagesCount);
@@ -180,9 +181,9 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetBreakdownAndRate_ValidNameBlankRange_ReturnsAll()
+        public async Task GetBreakdownAndRate_ValidNameBlankRange_ReturnsAll()
         {
-            var breakdowns = _countyService.GetBreakdownAndRate("Harris", StatExtension._blankDateTime, StatExtension._blankDateTime, 1, 1);
+            var breakdowns = await _countyService.GetBreakdownAndRate("Harris", StatExtension._blankDateTime, StatExtension._blankDateTime, 1, 1);
 
             Assert.AreEqual(1, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(2, breakdowns.TotalPagesCount);
@@ -196,9 +197,9 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetBreakdownAndRate_InvalidPageIndex_ReturnsEmptyList()
+        public async Task GetBreakdownAndRate_InvalidPageIndex_ReturnsEmptyList()
         {
-            var breakdowns = _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+            var breakdowns = await _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
             Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(2, breakdowns.TotalPagesCount);
@@ -206,27 +207,27 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetBreakdownAndRate_CountyNotFound_ReturnsEmptyList()
+        public async Task GetBreakdownAndRate_CountyNotFound_ReturnsEmptyList()
         {
-            var breakdowns = _countyService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+            var breakdowns = await _countyService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
 
             Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(0, breakdowns.TotalPagesCount);
         }
 
         [TestMethod]
-        public void GetBreakdownAndRate_InvalidPaging_ReturnsEmptyList()
+        public async Task GetBreakdownAndRate_InvalidPaging_ReturnsEmptyList()
         {
-            var breakdowns = _countyService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
+            var breakdowns = await _countyService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), -1, 0);
 
             Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(0, breakdowns.TotalPagesCount);
         }
 
         [TestMethod]
-        public void GetRate_EmptyName_ReturnsAllTheCounties()
+        public async Task GetRate_EmptyName_ReturnsAllTheCounties()
         {
-            var rates = _countyService.GetRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
+            var rates = await _countyService.GetRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
 
             Assert.AreEqual(3258, rates.CountyRates.Count());
             Assert.AreEqual(3258, rates.TotalPagesCount);

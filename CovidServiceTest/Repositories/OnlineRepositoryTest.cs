@@ -31,16 +31,6 @@ namespace CovidServiceTest.Repositories
         }
 
         [TestMethod]
-        public void GetStates_ReturnsList()
-        {
-            var file = new OnlineRepository(_logger, _githubServiceMock.Object);
-            var state = file.GetState("Alabama");
-
-            Assert.AreEqual(69, state.Counties.Count());
-            Assert.AreEqual("Alabama", state.Name);
-        }
-
-        [TestMethod]
         public async Task GetStatesAsync_ReturnsList()
         {
             
@@ -79,19 +69,19 @@ namespace CovidServiceTest.Repositories
         }
 
         [TestMethod]
-        public void GetState_NotFound_ReturnsNull()
+        public async Task GetStateAsync_NotFound_ReturnsNull()
         {
             var file = new OnlineRepository(_logger, _githubServiceMock.Object);
-            var state = file.GetState("AAA");
+            var state = await file.GetStateAsync("AAA");
 
             Assert.AreEqual(null, state);
         }
 
         [TestMethod]
-        public void GetCounties_ReturnsList()
+        public async Task GetCountiesAsync_ReturnsList()
         {
             var file = new OnlineRepository(_logger, _githubServiceMock.Object);
-            var counties = file.GetCounties();
+            var counties = await file.GetCountiesAsync();
 
             Assert.AreEqual(3258, counties.Count());
             Assert.AreEqual("Barbour, Alabama, US", counties[2].CombinedKey);

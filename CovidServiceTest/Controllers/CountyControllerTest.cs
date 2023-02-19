@@ -9,6 +9,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CovidServiceTest
 {
@@ -23,163 +24,163 @@ namespace CovidServiceTest
         {
             _serviceMock = new Mock<ICountyService>();
             _serviceMock.Setup(x => x.GetSummary(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(new PagedCountySummary());
+                .Returns(Extensions.NewTask<PagedCountySummary>());
             _serviceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(new PagedCountyBreakdown());
+                .Returns(Extensions.NewTask<PagedCountyBreakdown>());
             _serviceMock.Setup(x => x.GetRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(new PagedCountyRate());
+                .Returns(Extensions.NewTask <PagedCountyRate>());
         }
 
         [TestMethod]
-        public void GetSummary_Returns()
+        public async Task GetSummary_Returns()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
             _serviceMock.Setup(x => x.GetSummary(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(new PagedCountySummary() { TotalPagesCount = 1 } );
+                .Returns(Extensions.NewTask<PagedCountySummary>((summary) => { summary.TotalPagesCount = 1; }));
 
-            var summary = controller.GetSummary("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10);
+            var summary = await controller.GetSummary("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10);
             
             Assert.IsNotNull(summary);
             _serviceMock.Verify(x => x.GetSummary("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10), Times.Once());
         }
 
         [TestMethod]
-        public void GetSummary_InvalidCountyName_Throws()
+        public async Task GetSummary_InvalidCountyName_Throws()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<CountyNotFoundException>(
+            await Assert.ThrowsExceptionAsync<CountyNotFoundException>(
                 () => controller.GetSummary("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10)
             );
         }
 
         [TestMethod]
-        public void GetSummary_InvalidDateRange_Throws()
+        public async Task GetSummary_InvalidDateRange_Throws()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetSummary("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01), 0, 0)
             );
         }
 
         [TestMethod]
-        public void GetSummary_InvalidPageSize_Throws()
+        public async Task GetSummary_InvalidPageSize_Throws()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetSummary("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
 
         [TestMethod]
-        public void GetSummary_BlankCounty_Throws()
+        public async Task GetSummary_BlankCounty_Throws()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<BlankCountyException>(
+            await Assert.ThrowsExceptionAsync<BlankCountyException>(
                 () => controller.GetSummary("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
 
         [TestMethod]
-        public void GetBreakdown_Returns()
+        public async Task GetBreakdown_Returns()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            var summary = controller.GetBreakdown("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10);
+            var summary = await controller.GetBreakdown("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10);
 
             Assert.IsNotNull(summary);
             _serviceMock.Verify(x => x.GetBreakdownAndRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10), Times.Once());
         }
 
         [TestMethod]
-        public void GetBreakdown_InvalidDateRange_Throws()
+        public async Task GetBreakdown_InvalidDateRange_Throws()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetBreakdown("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01), 0, 0)
             );
         }
 
         [TestMethod]
-        public void GetSummary_BlankStartDate_Throws()
+        public async Task GetSummary_BlankStartDate_Throws()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetBreakdown("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01), 0, 0)
             );
         }
 
         [TestMethod]
-        public void GetBreakdown_InvalidPageSize_Throws()
+        public async Task GetBreakdown_InvalidPageSize_Throws()
         {
             
 
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetBreakdown("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
 
         [TestMethod]
-        public void GetBreakdown_BlankLocation_Throws()
+        public async Task GetBreakdown_BlankLocation_Throws()
         {
 
 
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<BlankCountyException>(
+            await Assert.ThrowsExceptionAsync<BlankCountyException>(
                 () => controller.GetBreakdown("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
 
         [TestMethod]
-        public void GetRate_Returns()
+        public async Task GetRate_Returns()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            var summary = controller.GetRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10);
+            var summary = await controller.GetRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10);
 
             Assert.IsNotNull(summary);
             _serviceMock.Verify(x => x.GetRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10), Times.Once());
         }
 
         [TestMethod]
-        public void GetRate_InvalidDateRange_Throws()
+        public async Task GetRate_InvalidDateRange_Throws()
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetRate("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01), 0, 0)
             );
         }
 
         [TestMethod]
-        public void GetRate_InvalidPageSize_Throws()
+        public async Task GetRate_InvalidPageSize_Throws()
         {
 
 
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
 
         [TestMethod]
-        public void GetRate_BlankLocation_Throws()
+        public async Task GetRate_BlankLocation_Throws()
         {
 
 
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<BlankCountyException>(
+            await Assert.ThrowsExceptionAsync<BlankCountyException>(
                 () => controller.GetRate("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }

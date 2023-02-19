@@ -1,5 +1,6 @@
 ﻿using CovidService.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CovidService.Repositories
 {
@@ -7,5 +8,9 @@ namespace CovidService.Repositories
     {
         public State GetState(string stateName);
         public List<County> GetCounties();
+
+        public Task<State> GetStateAsync(string stateName);
+        public Task<List<County>> GetCountiesAsync();
+
     }
 }

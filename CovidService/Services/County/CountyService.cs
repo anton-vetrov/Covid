@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 using CovidService.Repositories;
 using CovidService.Services.County.Extensions;
 
@@ -14,9 +14,9 @@ namespace CovidService.Services.County
         {
             _repository = repository;
         }
-        public PagedCountySummary GetSummary(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public async Task<PagedCountySummary> GetSummary(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
-            IEnumerable<CovidService.Models.County> counties = _repository.GetCounties();
+            IEnumerable<CovidService.Models.County> counties = await _repository.GetCountiesAsync();
 
             if (!string.IsNullOrEmpty(countyName))
                 counties = counties.Where(x => x.Name == countyName);
@@ -30,11 +30,11 @@ namespace CovidService.Services.County
                 TotalPagesCount = totalPagesCount
             };
         }
-        public PagedCountyBreakdown GetBreakdownAndRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public async Task<PagedCountyBreakdown> GetBreakdownAndRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
             var countyBreakdowns = new List<CountyBreakdown>();
 
-            IEnumerable<CovidService.Models.County> counties = _repository.GetCounties();
+            IEnumerable<CovidService.Models.County> counties = await _repository.GetCountiesAsync();
 
             if (!string.IsNullOrEmpty(countyName))
                 counties = counties.Where(x => x.Name == countyName);
@@ -77,9 +77,9 @@ namespace CovidService.Services.County
             return paged;
         }
 
-        public PagedCountyRate GetRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
+        public async Task<PagedCountyRate> GetRate(string countyName, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
-            var breakdown = GetBreakdownAndRate(countyName, startDate, endDate, pageIndex, pageSize);
+            var breakdown = await GetBreakdownAndRate(countyName, startDate, endDate, pageIndex, pageSize);
 
             var paged = new PagedCountyRate()
             {

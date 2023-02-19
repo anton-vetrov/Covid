@@ -59,12 +59,18 @@ namespace CovidService.Repositories
         public async Task<State> GetStateAsync(string stateName)
         {
             var stream = await _githubService.DownloadFile();
-            return GetFileRepository(stream).GetState(stateName);
+            return await GetFileRepository(stream).GetStateAsync(stateName);
         }
 
         public List<County> GetCounties()
         {
             return _syncRepository.GetCounties();
+        }
+
+        public async Task<List<County>> GetCountiesAsync()
+        {
+            var stream = await _githubService.DownloadFile();
+            return await GetFileRepository(stream).GetCountiesAsync();
         }
     }
 
