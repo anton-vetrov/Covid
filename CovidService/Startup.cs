@@ -1,5 +1,6 @@
 using CovidService.Repositories;
 using CovidService.Services.County;
+using CovidService.Services.State;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,7 @@ namespace CovidService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ICountyService, CountyService>();
+            services.AddScoped<IStateService, StateService>();
             services.AddSingleton<IRepository, OnlineRepository>();
             services.AddControllers(options =>
             {

@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 
-namespace CovidServiceTest
+namespace CovidServiceTest.Services
 {
 
     [TestClass]
@@ -47,6 +47,19 @@ namespace CovidServiceTest
             Assert.AreEqual(23512.792753623184, summary.Cases.Average);
             Assert.AreEqual(0, summary.Cases.Minimum.Count);
             Assert.AreEqual(new DateTime(2023, 2, 1), summary.Cases.Minimum.Date);
+            Assert.AreEqual(235948, summary.Cases.Maximum.Count);
+            Assert.AreEqual(new DateTime(2023, 2, 8), summary.Cases.Maximum.Date);
+        }
+
+        [TestMethod]
+        public void GetSummary_ValidStateNameBlankRange_ReturnsAll()
+        {
+            var summary = _stateService.GetSummary("Alabama", new DateTime(0001, 01, 01), new DateTime(0001, 01, 01));
+
+            Assert.AreEqual("Alabama", summary.State);
+            Assert.AreEqual(10794.324637681162, summary.Cases.Average);
+            Assert.AreEqual(0, summary.Cases.Minimum.Count);
+            Assert.AreEqual(new DateTime(2020, 1, 22), summary.Cases.Minimum.Date);
             Assert.AreEqual(235948, summary.Cases.Maximum.Count);
             Assert.AreEqual(new DateTime(2023, 2, 8), summary.Cases.Maximum.Date);
         }

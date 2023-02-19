@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace CovidServiceTest
+namespace CovidServiceTest.Services
 {
     [TestClass]
     public class CountyServiceTest
@@ -18,7 +18,7 @@ namespace CovidServiceTest
         private CountyService _countyService;
 
         public CountyServiceTest()
-        { 
+        {
 
         }
 
@@ -158,7 +158,7 @@ namespace CovidServiceTest
             Assert.AreEqual(new DateTime(2023, 2, 9), breakdown.Date);
             Assert.AreEqual(1265347, breakdown.TotalCases);
             Assert.AreEqual(1265347 - 1262246, breakdown.NewCases);
-            Assert.AreEqual((1265347.0 - 1262246.0)*100.0/1262246.0, breakdown.RatePercentage);
+            Assert.AreEqual((1265347.0 - 1262246.0) * 100.0 / 1262246.0, breakdown.RatePercentage);
         }
 
         [TestMethod]

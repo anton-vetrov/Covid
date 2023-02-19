@@ -10,7 +10,6 @@
     },
     "CovidService": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "http://localhost:5000/CovidApi/County/Rate?pageIndex=0&pageSize=5&county=Autauga&startDate=2-1-2020&endDate=2-15-2023",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

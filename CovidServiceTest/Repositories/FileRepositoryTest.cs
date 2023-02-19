@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 
-namespace CovidServiceTest
+namespace CovidServiceTest.Repositories
 {
     [TestClass]
     public class FileRepositoryTest

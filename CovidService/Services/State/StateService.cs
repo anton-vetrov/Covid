@@ -8,7 +8,7 @@ using CovidService.Services.State;
 
 namespace CovidService.Services.County
 {
-    public class StateService : IStateService
+    public class StateService : State.IStateService
     {
         private IRepository _repository;
         public StateService(IRepository repository)
@@ -16,7 +16,7 @@ namespace CovidService.Services.County
             _repository = repository;
         }
 
-        public StateSummary GetSummary(string stateName, DateTime startDate, DateTime endDate)
+        public State.StateSummary GetSummary(string stateName, DateTime startDate, DateTime endDate)
         {
             var state = _repository.GetState(stateName);
             if (state == null)
@@ -42,7 +42,7 @@ namespace CovidService.Services.County
 
             aggregatedSummary.Cases.Average /= (double)state.Counties.Count();
 
-            return new StateSummary()
+            return new State.StateSummary()
             {
                 State = stateName,
                 Cases = aggregatedSummary.Cases
