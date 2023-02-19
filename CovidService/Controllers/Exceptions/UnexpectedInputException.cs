@@ -3,9 +3,9 @@ using System;
 
 namespace CovidService.Controllers.Exceptions
 {
-    public class UnexpectedInputException : ControllerException
+    public class UnexpectedDateRangeException : ControllerException
     {
-        public UnexpectedInputException() : base("Unexpected input parameters", StatusCodes.Status400BadRequest)
+        public UnexpectedDateRangeException() : base("Incorrect date range", StatusCodes.Status400BadRequest)
         {
         }
     }

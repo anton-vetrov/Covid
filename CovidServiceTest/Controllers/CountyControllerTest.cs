@@ -59,7 +59,7 @@ namespace CovidServiceTest
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedInputException>(
+            Assert.ThrowsException<UnexpectedDateRangeException>(
                 () => controller.GetSummary("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01), 0, 0)
             );
         }
@@ -69,7 +69,7 @@ namespace CovidServiceTest
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedInputException>(
+            Assert.ThrowsException<UnexpectedDateRangeException>(
                 () => controller.GetSummary("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
@@ -100,7 +100,7 @@ namespace CovidServiceTest
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedInputException>(
+            Assert.ThrowsException<UnexpectedDateRangeException>(
                 () => controller.GetBreakdown("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01), 0, 0)
             );
         }
@@ -110,7 +110,7 @@ namespace CovidServiceTest
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedInputException>(
+            Assert.ThrowsException<UnexpectedDateRangeException>(
                 () => controller.GetBreakdown("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01), 0, 0)
             );
         }
@@ -122,7 +122,7 @@ namespace CovidServiceTest
 
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedInputException>(
+            Assert.ThrowsException<UnexpectedDateRangeException>(
                 () => controller.GetBreakdown("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }
@@ -155,7 +155,7 @@ namespace CovidServiceTest
         {
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedInputException>(
+            Assert.ThrowsException<UnexpectedDateRangeException>(
                 () => controller.GetRate("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01), 0, 0)
             );
         }
@@ -167,7 +167,7 @@ namespace CovidServiceTest
 
             var controller = new CountyController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedInputException>(
+            Assert.ThrowsException<UnexpectedDateRangeException>(
                 () => controller.GetRate("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 0, 0)
             );
         }

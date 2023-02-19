@@ -35,8 +35,6 @@ namespace CovidService.Controllers
         /// <param name="state"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet("Summary")]
         public Services.State.StateSummary GetSummary(string state, DateTime startDate, DateTime endDate) 
@@ -48,6 +46,30 @@ namespace CovidService.Controllers
                 throw (new StateNotFoundException());
 
             return summary;
+        }
+
+        [HttpGet("Breakdown")]
+        public StateBreakdown GetBreakdown(string state, DateTime startDate, DateTime endDate)
+        {
+            ValidateInput(state, startDate, endDate);
+
+            var breakdown = _stateService.GetBreakdownAndRate(state, startDate, endDate);
+            if (breakdown == null)
+                throw (new StateNotFoundException());
+
+            return breakdown;
+        }
+
+        [HttpGet("Rate")]
+        public StateRate GetRate(string state, DateTime startDate, DateTime endDate)
+        {
+            ValidateInput(state, startDate, endDate);
+
+            var rate = _stateService.GetRate(state, startDate, endDate);
+            if (rate == null)
+                throw (new StateNotFoundException());
+
+            return rate;
         }
 
         [Route("/error")]
@@ -71,7 +93,7 @@ namespace CovidService.Controllers
             if (endDate < startDate || startDate == StatExtension._blankDateTime)
             {
                 _logger.LogError("Unexpected date range {}-{}", startDate, endDate);
-                throw (new UnexpectedInputException());
+                throw (new UnexpectedDateRangeException());
             }
 
 

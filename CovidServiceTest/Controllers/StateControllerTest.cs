@@ -24,12 +24,10 @@ namespace CovidServiceTest
             _serviceMock = new Mock<IStateService>();
             _serviceMock.Setup(x => x.GetSummary(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                 .Returns(new StateSummary());
-            /*
-            _countyServiceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(new PagedCountyBreakdown());
-            _countyServiceMock.Setup(x => x.GetRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(new PagedCountyRate());
-            */
+            _serviceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns(new StateBreakdown());
+            _serviceMock.Setup(x => x.GetRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns(new StateRate());
         }
 
         [TestMethod]
@@ -62,7 +60,7 @@ namespace CovidServiceTest
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedInputException>(
+            Assert.ThrowsException<UnexpectedDateRangeException>(
                 () => controller.GetSummary("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01))
             );
         }
@@ -72,7 +70,7 @@ namespace CovidServiceTest
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedInputException>(
+            Assert.ThrowsException<UnexpectedDateRangeException>(
                 () => controller.GetSummary("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
             );
         }
@@ -90,5 +88,120 @@ namespace CovidServiceTest
             );
         }
 
+        [TestMethod]
+        public void GetBreakdown_Returns()
+        {
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            _serviceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns(new StateBreakdown() { State = "Alabama" });
+
+            var breakdown = controller.GetBreakdown("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01));
+
+            Assert.IsNotNull(breakdown);
+            Assert.AreEqual("Alabama", breakdown.State);
+            _serviceMock.Verify(x => x.GetBreakdownAndRate("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01)), Times.Once());
+        }
+
+        [TestMethod]
+        public void GetBreakdown_BlankState_Throws()
+        {
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            Assert.ThrowsException<BlankStateException>(
+                () => controller.GetBreakdown("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
+            );
+        }
+
+        [TestMethod]
+        public void GetBreakdown_InvalidDateRange_Throws()
+        {
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            Assert.ThrowsException<UnexpectedDateRangeException>(
+                () => controller.GetBreakdown("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01))
+            );
+        }
+
+        [TestMethod]
+        public void GetBreakdown_BlankStartDate_Throws()
+        {
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            Assert.ThrowsException<UnexpectedDateRangeException>(
+                () => controller.GetBreakdown("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
+            );
+        }
+
+        [TestMethod]
+        public void GetBreakdown_InvalidStateName_Throws()
+        {
+            _serviceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns((StateBreakdown)null);
+
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            Assert.ThrowsException<StateNotFoundException>(
+                () => controller.GetBreakdown("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
+            );
+        }
+
+        [TestMethod]
+        public void GetRate_Returns()
+        {
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            _serviceMock.Setup(x => x.GetRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns(new StateRate() { State = "Alabama" });
+
+            var breakdown = controller.GetRate("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01));
+
+            Assert.IsNotNull(breakdown);
+            Assert.AreEqual("Alabama", breakdown.State);
+            _serviceMock.Verify(x => x.GetRate("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01)), Times.Once());
+        }
+
+        [TestMethod]
+        public void GetRate_BlankState_Throws()
+        {
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            Assert.ThrowsException<BlankStateException>(
+                () => controller.GetRate("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
+            );
+        }
+
+        [TestMethod]
+        public void GetRate_InvalidDateRange_Throws()
+        {
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            Assert.ThrowsException<UnexpectedDateRangeException>(
+                () => controller.GetRate("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01))
+            );
+        }
+
+        [TestMethod]
+        public void GetRate_BlankStartDate_Throws()
+        {
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            Assert.ThrowsException<UnexpectedDateRangeException>(
+                () => controller.GetRate("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
+            );
+        }
+
+        [TestMethod]
+        public void GetRate_InvalidStateName_Throws()
+        {
+            _serviceMock.Setup(x => x.GetRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns((StateRate)null);
+
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            Assert.ThrowsException<StateNotFoundException>(
+                () => controller.GetRate("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
+            );
+        }
     }
 }

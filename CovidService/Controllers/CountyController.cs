@@ -82,13 +82,13 @@ namespace CovidService.Controllers
             if (endDate < startDate || startDate == StatExtension._blankDateTime)
             {
                 _logger.LogError("Unexpected date range {}-{}", startDate, endDate);
-                throw (new UnexpectedInputException());
+                throw (new UnexpectedDateRangeException());
             }
 
             if (pageSize == 0)
             {
                 _logger.LogError("Unexpected pageSize {}", pageSize);
-                throw (new UnexpectedInputException());
+                throw (new UnexpectedDateRangeException());
             }
 
             if (pageSize > MaximumPageSize)
