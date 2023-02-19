@@ -43,7 +43,11 @@ namespace CovidService.Controllers
             ValidateInput(county, startDate, endDate, pageIndex, pageSize);
 
             // TODO Output date only, currently it outputs date and time
-            return _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize);
+            var summary = _countyService.GetSummary(county, startDate, endDate, pageIndex, pageSize);
+            if (summary.TotalPagesCount == 0)
+                throw (new CountyNotFoundException());
+
+            return summary;
         }
 
         [HttpGet("Breakdown")]

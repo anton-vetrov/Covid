@@ -5,7 +5,7 @@ namespace CovidService.Repositories
 {
     public interface IRepository
     {
-        public List<State> GetStates();
+        public State GetState(string stateName);
         public List<County> GetCounties();
     }
 }

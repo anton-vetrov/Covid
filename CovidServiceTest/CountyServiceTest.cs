@@ -17,8 +17,13 @@ namespace CovidServiceTest
 
         private CountyService _countyService;
 
-        [AssemblyInitialize]
-        public static void AssemblyInit(TestContext context)
+        public CountyServiceTest()
+        { 
+
+        }
+
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext context)
         {
             using (var memoryStream = new MemoryStream(Properties.Resources.Covid19ConfirmedUS))
             {

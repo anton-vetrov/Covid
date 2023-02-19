@@ -14,30 +14,15 @@ namespace CovidService
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Exception is UnexpectedInputException inputException)
+            if (context.Exception is ControllerException controllerException)
             {
                 context.Result = new ObjectResult(
                     new {
-                        Message = inputException.Message,
+                        Message = controllerException.Message,
                     }
                 )
                 {
-                    StatusCode = inputException.StatusCode
-                };
-
-                context.ExceptionHandled = true;
-            }
-
-            if (context.Exception is BlankCountyException blankLocationException)
-            {
-                context.Result = new ObjectResult(
-                    new
-                    {
-                        Message = blankLocationException.Message,
-                    }
-                )
-                {
-                    StatusCode = blankLocationException.StatusCode
+                    StatusCode = controllerException.StatusCode
                 };
 
                 context.ExceptionHandled = true;

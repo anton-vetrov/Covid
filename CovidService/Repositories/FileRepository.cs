@@ -125,9 +125,18 @@ namespace CovidService.Repositories
             }
         }
 
-        public List<State> GetStates()
+        /// <summary>
+        ///         /// 
+        /// </summary>
+        /// <param name="stateName"></param>
+        /// <returns>State if found otherwise returns null</returns>
+        public State GetState(string stateName)
         {
-            return _countries[US].States.Values.ToList();
+            State state;
+            if (_countries[US].States.TryGetValue(stateName, out state))
+                return state;
+
+            return null;
         }
 
         public List<County> GetCounties()

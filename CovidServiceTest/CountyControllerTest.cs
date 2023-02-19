@@ -34,10 +34,23 @@ namespace CovidServiceTest
         {
             var controller = new CountyController(_logger, _countyServiceMock.Object);
 
+            _countyServiceMock.Setup(x => x.GetSummary(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Returns(new PagedCountySummary() { TotalPagesCount = 1 } );
+
             var summary = controller.GetSummary("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10);
             
             Assert.IsNotNull(summary);
             _countyServiceMock.Verify(x => x.GetSummary("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10), Times.Once());
+        }
+
+        [TestMethod]
+        public void GetSummary_InvalidCountyName_Throws()
+        {
+            var controller = new CountyController(_logger, _countyServiceMock.Object);
+
+            Assert.ThrowsException<CountyNotFoundException>(
+                () => controller.GetSummary("Test", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01), 1, 10)
+            );
         }
 
         [TestMethod]
@@ -53,8 +66,6 @@ namespace CovidServiceTest
         [TestMethod]
         public void GetSummary_InvalidPageSize_Throws()
         {
-            
-
             var controller = new CountyController(_logger, _countyServiceMock.Object);
 
             Assert.ThrowsException<UnexpectedInputException>(

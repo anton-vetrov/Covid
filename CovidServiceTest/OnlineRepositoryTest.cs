@@ -19,10 +19,19 @@ namespace CovidServiceTest
         public void GetStates_ReturnsList()
         {
             var file = new OnlineRepository(_logger);
-            var counties = file.GetStates();
+            var state = file.GetState("Alabama");
 
-            Assert.AreEqual(53, counties.Count());
-            Assert.AreEqual("Alabama", counties[0].Name);
+            Assert.AreEqual(69, state.Counties.Count());
+            Assert.AreEqual("Alabama", state.Name);
+        }
+
+        [TestMethod]
+        public void GetState_NotFound_ReturnsNull()
+        {
+            var file = new OnlineRepository(_logger);
+            var state = file.GetState("AAA");
+
+            Assert.AreEqual(null, state);
         }
 
         [TestMethod]

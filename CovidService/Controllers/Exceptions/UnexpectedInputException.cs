@@ -3,12 +3,10 @@ using System;
 
 namespace CovidService.Controllers.Exceptions
 {
-    public class UnexpectedInputException : Exception
+    public class UnexpectedInputException : ControllerException
     {
-        public int StatusCode { get; set; }
-        public UnexpectedInputException() : base($"Unexpected input parameters")
+        public UnexpectedInputException() : base("Unexpected input parameters", StatusCodes.Status400BadRequest)
         {
-            StatusCode = StatusCodes.Status400BadRequest;
         }
     }
 }

@@ -32,9 +32,9 @@ namespace CovidService.Repositories
             }
         }
 
-        public List<State> GetStates()
+        public State GetState(string stateName)
         {
-            return _repository.GetStates();
+            return _repository.GetState(stateName);
         }
 
         public List<County> GetCounties()
