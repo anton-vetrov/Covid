@@ -1,5 +1,6 @@
 ﻿using CovidService.Controllers.Exceptions;
 using CovidService.Services.County;
+using CovidService.Services.County.Extensions;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -78,7 +79,7 @@ namespace CovidService.Controllers
                 throw (new BlankCountyException());
             }
 
-            if (endDate < startDate)
+            if (endDate < startDate || startDate == StatExtension._blankDateTime)
             {
                 _logger.LogError("Unexpected date range {}-{}", startDate, endDate);
                 throw (new UnexpectedInputException());

@@ -1,6 +1,7 @@
 ﻿using CovidService.Controllers;
 using CovidService.Controllers.Exceptions;
 using CovidService.Services.County;
+using CovidService.Services.County.Extensions;
 using CovidService.Services.State;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -63,6 +64,16 @@ namespace CovidServiceTest
 
             Assert.ThrowsException<UnexpectedInputException>(
                 () => controller.GetSummary("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01))
+            );
+        }
+
+        [TestMethod]
+        public void GetSummary_BlankStartDate_Throws()
+        {
+            var controller = new StateController(_logger, _serviceMock.Object);
+
+            Assert.ThrowsException<UnexpectedInputException>(
+                () => controller.GetSummary("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
             );
         }
 
