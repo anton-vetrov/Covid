@@ -89,7 +89,7 @@ namespace CovidServiceTest.Services
         [TestMethod]
         public async Task GetSummary_ValidNameBlankRange_ReturnsAll()
         {
-            var summaries = await _countyService.GetSummary("Harris", StatExtension._blankDateTime, StatExtension._blankDateTime, 0, 5);
+            var summaries = await _countyService.GetSummary("Harris", CountyExtensions._blankDateTime, CountyExtensions._blankDateTime, 0, 5);
 
             Assert.AreEqual(2, summaries.CountySummaries.Count());
             Assert.AreEqual(2, summaries.TotalPagesCount);
@@ -183,7 +183,7 @@ namespace CovidServiceTest.Services
         [TestMethod]
         public async Task GetBreakdownAndRate_ValidNameBlankRange_ReturnsAll()
         {
-            var breakdowns = await _countyService.GetBreakdownAndRate("Harris", StatExtension._blankDateTime, StatExtension._blankDateTime, 1, 1);
+            var breakdowns = await _countyService.GetBreakdownAndRate("Harris", CountyExtensions._blankDateTime, CountyExtensions._blankDateTime, 1, 1);
 
             Assert.AreEqual(1, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(2, breakdowns.TotalPagesCount);

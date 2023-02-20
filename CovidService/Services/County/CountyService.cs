@@ -48,7 +48,7 @@ namespace CovidService.Services.County
             counties = counties.Skip(pageIndex * pageSize).Take(pageSize);
             foreach (var county in counties)
             {
-                var cases = (startDate == StatExtension._blankDateTime && endDate == StatExtension._blankDateTime)
+                var cases = (startDate == CountyExtensions._blankDateTime && endDate == CountyExtensions._blankDateTime)
                     ? county.Cases
                     : county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
                 if (cases.Count() == 0)

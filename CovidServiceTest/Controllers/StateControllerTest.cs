@@ -72,7 +72,7 @@ namespace CovidServiceTest
             var controller = new StateController(_logger, _serviceMock.Object);
 
             await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
-                () => controller.GetSummary("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
+                () => controller.GetSummary("Test", CountyExtensions._blankDateTime, new DateTime(2023, 01, 01))
             );
         }
 
@@ -130,7 +130,7 @@ namespace CovidServiceTest
             var controller = new StateController(_logger, _serviceMock.Object);
 
             await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
-                () => controller.GetBreakdown("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
+                () => controller.GetBreakdown("Test", CountyExtensions._blankDateTime, new DateTime(2023, 01, 01))
             );
         }
 
@@ -188,7 +188,7 @@ namespace CovidServiceTest
             var controller = new StateController(_logger, _serviceMock.Object);
 
             await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
-                () => controller.GetRate("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
+                () => controller.GetRate("Test", CountyExtensions._blankDateTime, new DateTime(2023, 01, 01))
             );
         }
 

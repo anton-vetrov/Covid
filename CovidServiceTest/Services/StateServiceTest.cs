@@ -58,7 +58,7 @@ namespace CovidServiceTest.Services
         [TestMethod]
         public async Task GetSummary_ValidStateNameBlankRange_ReturnsAll()
         {
-            var summary = await _stateService.GetSummary("Alabama", StatExtension._blankDateTime, StatExtension._blankDateTime);
+            var summary = await _stateService.GetSummary("Alabama", CountyExtensions._blankDateTime, CountyExtensions._blankDateTime);
 
             Assert.AreEqual("Alabama", summary.State);
             Assert.AreEqual(10794.324637681162, summary.Cases.Average);
@@ -92,7 +92,7 @@ namespace CovidServiceTest.Services
         [TestMethod]
         public async Task GetBreakdownAndRate_ValidStateNameBlankRange_ReturnsAll()
         {
-            var stateBreakdown = await _stateService.GetBreakdownAndRate("Alabama", StatExtension._blankDateTime, StatExtension._blankDateTime);
+            var stateBreakdown = await _stateService.GetBreakdownAndRate("Alabama", CountyExtensions._blankDateTime, CountyExtensions._blankDateTime);
 
             Assert.AreEqual("Alabama", stateBreakdown.State);
             var breakdown = stateBreakdown.DateBreakdowns.First();

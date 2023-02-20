@@ -6,7 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace CovidService.Services.County.Extensions
 {
-    public static class StatExtension
+    public static class CountyExtensions
     {
         public static DateTime _blankDateTime = new DateTime(0001, 01, 01);
 
@@ -25,9 +25,29 @@ namespace CovidService.Services.County.Extensions
                     break;
                 }
 
-                // TODO This is super ineffective, but short and passes array multiple times finding max and then date
-                var max = cases.Select(x => x.Value.Count).Max();
-                var min = cases.Select(x => x.Value.Count).Min();
+                var minimum = cases.Aggregate((current, next) => {
+                    var date = (current.Value.Count <= next.Value.Count) ? current.Value.Date : next.Value.Date;
+                    return new KeyValuePair<DateTime, Models.Case>(
+                        date,
+                        new Models.Case()
+                        {
+                            Date = date,
+                            Count = (current.Value.Count <= next.Value.Count) ? current.Value.Count : next.Value.Count
+                        });
+                    
+                });
+                var maximum = cases.Aggregate((current, next) => {
+                    var date = (current.Value.Count >= next.Value.Count) ? current.Value.Date : next.Value.Date;
+                    return new KeyValuePair<DateTime, Models.Case>(
+                        date,
+                        new Models.Case()
+                        {
+                            Date = date,
+                            Count = (current.Value.Count >= next.Value.Count) ? current.Value.Count : next.Value.Count
+                        });
+
+                });
+                var average = Math.Round(cases.Select(x => x.Value.Count).Average(), 1);
 
                 summaries.Add(
                     new CountySummary()
@@ -37,16 +57,16 @@ namespace CovidService.Services.County.Extensions
                         Long = county.Long,
                         Cases = new CasesSummary()
                         {
-                            Average = Math.Round(cases.Select(x => x.Value.Count).Average(), 1),
+                            Average = average,
                             Minimum = new DateAndCount()
                             {
-                                Count = min,
-                                Date = cases.Where(x => x.Value.Count == min).First().Value.Date
+                                Count = minimum.Value.Count,
+                                Date = minimum.Value.Date
                             },
                             Maximum = new DateAndCount()
                             {
-                                Count = max,
-                                Date = cases.Where(x => x.Value.Count == max).First().Value.Date
+                                Count = maximum.Value.Count,
+                                Date = maximum.Value.Date
                             }
                         }
                     }
@@ -61,7 +81,7 @@ namespace CovidService.Services.County.Extensions
             var countyBreakdowns = new List<CountyBreakdown>();
             foreach (var county in counties)
             {
-                var cases = (startDate == StatExtension._blankDateTime && endDate == StatExtension._blankDateTime)
+                var cases = (startDate == CountyExtensions._blankDateTime && endDate == CountyExtensions._blankDateTime)
                     ? county.Cases
                     : county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
                 if (cases.Count() == 0)

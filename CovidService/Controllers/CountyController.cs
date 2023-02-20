@@ -79,7 +79,7 @@ namespace CovidService.Controllers
                 throw (new BlankCountyException());
             }
 
-            if (endDate < startDate || startDate == StatExtension._blankDateTime)
+            if (endDate < startDate || startDate == CountyExtensions._blankDateTime)
             {
                 _logger.LogError("Unexpected date range {}-{}", startDate, endDate);
                 throw (new UnexpectedDateRangeException());

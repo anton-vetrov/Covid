@@ -112,7 +112,7 @@ namespace CovidServiceTest
             var controller = new CountyController(_logger, _serviceMock.Object);
 
             await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
-                () => controller.GetBreakdown("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01), 0, 0)
+                () => controller.GetBreakdown("Test", CountyExtensions._blankDateTime, new DateTime(2023, 01, 01), 0, 0)
             );
         }
 
