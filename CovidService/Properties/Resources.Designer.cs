@@ -60,14 +60,5 @@ namespace CovidService.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Covid19ConfirmedUS {
-            get {
-                object obj = ResourceManager.GetObject("Covid19ConfirmedUS", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

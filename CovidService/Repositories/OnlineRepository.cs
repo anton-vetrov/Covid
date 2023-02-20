@@ -20,9 +20,6 @@ namespace CovidService.Repositories
     {
         private readonly ILogger<OnlineRepository> _logger;
 
-        // TODO Eliminate this
-        IRepository _syncRepository = new FileRepository(new MemoryStream(Properties.Resources.Covid19ConfirmedUS));
-
         IRepository _repository;
         IGithubService _githubService;
 

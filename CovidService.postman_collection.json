@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "435948b3-7760-49d4-889f-8cec9b211593",
+		"name": "CovidService",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "County",
+			"item": [
+				{
+					"name": "/CovidApi/County/Rate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/CovidApi/County/Rate?pageIndex=0&pageSize=5&county=Autauga&startDate=2-1-2020&endDate=2-15-2023",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"CovidApi",
+								"County",
+								"Rate"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "0"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "county",
+									"value": "Autauga"
+								},
+								{
+									"key": "startDate",
+									"value": "2-1-2020"
+								},
+								{
+									"key": "endDate",
+									"value": "2-15-2023"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/CovidApi/County/Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/CovidApi/County/Summary?pageIndex=0&pageSize=5&county=Harris&startDate=2-1-2021&endDate=2-15-2023",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"CovidApi",
+								"County",
+								"Summary"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "0"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "county",
+									"value": "Harris"
+								},
+								{
+									"key": "startDate",
+									"value": "2-1-2021"
+								},
+								{
+									"key": "endDate",
+									"value": "2-15-2023"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/CovidApi/County/Breakdown Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/CovidApi/County/Breakdown?pageIndex=0&pageSize=5&county=Autauga&startDate=2-1-2020&endDate=2-15-2023",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"CovidApi",
+								"County",
+								"Breakdown"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "0"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "county",
+									"value": "Autauga"
+								},
+								{
+									"key": "startDate",
+									"value": "2-1-2020"
+								},
+								{
+									"key": "endDate",
+									"value": "2-15-2023"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "State",
+			"item": [
+				{
+					"name": "/CovidApi/State/Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/CovidApi/State/Summary?state=Alabama&startDate=2-1-2023&endDate=2-15-2023",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"CovidApi",
+								"State",
+								"Summary"
+							],
+							"query": [
+								{
+									"key": "state",
+									"value": "Alabama"
+								},
+								{
+									"key": "startDate",
+									"value": "2-1-2023"
+								},
+								{
+									"key": "endDate",
+									"value": "2-15-2023"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/CovidApi/State/Breakdown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/CovidApi/State/Breakdown?state=Alabama&startDate=2-1-2023&endDate=2-15-2023",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"CovidApi",
+								"State",
+								"Breakdown"
+							],
+							"query": [
+								{
+									"key": "state",
+									"value": "Alabama"
+								},
+								{
+									"key": "startDate",
+									"value": "2-1-2023"
+								},
+								{
+									"key": "endDate",
+									"value": "2-15-2023"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/CovidApi/State/Rate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/CovidApi/State/Rate?state=Alabama&startDate=2-1-2023&endDate=2-15-2023",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"CovidApi",
+								"State",
+								"Rate"
+							],
+							"query": [
+								{
+									"key": "state",
+									"value": "Alabama"
+								},
+								{
+									"key": "startDate",
+									"value": "2-1-2023"
+								},
+								{
+									"key": "endDate",
+									"value": "2-15-2023"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
