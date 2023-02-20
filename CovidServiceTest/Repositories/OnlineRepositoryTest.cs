@@ -1,5 +1,7 @@
 ﻿using CovidService.Models;
 using CovidService.Repositories;
+using CovidService.Services.Github;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.Interfaces;
@@ -20,12 +22,14 @@ namespace CovidServiceTest.Repositories
     {
         ILogger<OnlineRepository> _logger = new Mock<ILogger<OnlineRepository>>().Object;
         Mock<ILogger<GithubService>> _githubServiceLogger;
+        Mock<IConfiguration> _configurationMock;
         Mock<IGithubService> _githubServiceMock;
 
         [TestInitialize]
         public void TestInitialize()
         {
             _githubServiceLogger = new Mock<ILogger<GithubService>>();
+            _configurationMock = new Mock<IConfiguration>();
             _githubServiceMock = new Mock<IGithubService>();
             _githubServiceMock.Setup(x => x.DownloadFile()).ReturnsAsync(new MemoryStream(Properties.Resources.Covid19ConfirmedUS));
         }
@@ -46,7 +50,9 @@ namespace CovidServiceTest.Repositories
         {
             var httpClient = new HttpClient();
 
-            var githubService = new GithubService(_githubServiceLogger.Object, httpClient);
+            _configurationMock.Setup(x => x[It.Is<string>(s => s == "CovidCasesUrl")]).Returns("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv");
+
+            var githubService = new GithubService(_githubServiceLogger.Object, _configurationMock.Object, httpClient);
             var file = new OnlineRepository(_logger, githubService);
             var state = await file.GetStateAsync("Alabama");
 

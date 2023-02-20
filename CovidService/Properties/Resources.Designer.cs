@@ -59,6 +59,5 @@ namespace CovidService.Properties {
                 resourceCulture = value;
             }
         }
-        
     }
 }

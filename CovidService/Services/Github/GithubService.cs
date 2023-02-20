@@ -1,24 +1,23 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace CovidService.Repositories
+namespace CovidService.Services.Github
 {
     public class GithubService : IGithubService
     {
-        private string _uri = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv";
-
         private readonly ILogger<GithubService> _logger;
 
         private Task<Stream> _downloadStreamTask;
 
-        public GithubService(ILogger<GithubService> logger, HttpClient httpClient)
+        public GithubService(ILogger<GithubService> logger, IConfiguration configuration, HttpClient httpClient)
         {
             _logger = logger;
-            _downloadStreamTask = httpClient.GetStreamAsync(_uri);
+            _downloadStreamTask = httpClient.GetStreamAsync(configuration["CovidCasesUrl"]);
         }
 
         public async Task<Stream> DownloadFile()
@@ -31,13 +30,22 @@ namespace CovidService.Repositories
                     0,
                     this,
                     null,
-                    (state, exception) => {
+                    (state, exception) =>
+                    {
                         return "File download has finished!";
                     }
                 );
             }
 
-            return await _downloadStreamTask;
+            try
+            {
+                var stream = await _downloadStreamTask;
+                return stream;
+            }
+            catch (Exception)
+            {
+                throw new GithubException();
+            }
         }
     }
 }

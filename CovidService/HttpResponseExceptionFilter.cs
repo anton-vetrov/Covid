@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using CovidService.Controllers.Exceptions;
 using System.Net;
 
 namespace CovidService
@@ -14,7 +13,7 @@ namespace CovidService
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Exception is ControllerException controllerException)
+            if (context.Exception is BaseException controllerException)
             {
                 context.Result = new ObjectResult(
                     new {

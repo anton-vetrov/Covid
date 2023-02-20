@@ -9,10 +9,10 @@ using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using CovidService.Services;
 using CovidService.Controllers;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using CovidService.Services.Github;
 
 namespace CovidService.Repositories
 {
