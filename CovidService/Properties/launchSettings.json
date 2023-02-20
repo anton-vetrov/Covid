@@ -1,13 +1,5 @@
 {
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "weatherforecast",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "CovidService": {
       "commandName": "Project",
       "launchUrl": "http://localhost:5000/CovidApi/County/Rate?pageIndex=0&pageSize=5&county=Autauga&startDate=2-1-2020&endDate=2-15-2023",
