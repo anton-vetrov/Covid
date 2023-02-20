@@ -63,7 +63,7 @@ namespace CovidServiceTest.Services
 
             var stream = await service.DownloadFile();
 
-            Assert.AreEqual(17373754, stream.Length);
+            Assert.AreEqual(1102184, stream.Length);
         }
 
         [TestMethod]

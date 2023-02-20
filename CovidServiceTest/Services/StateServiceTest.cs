@@ -61,9 +61,9 @@ namespace CovidServiceTest.Services
             var summary = await _stateService.GetSummary("Alabama", CountyExtensions._blankDateTime, CountyExtensions._blankDateTime);
 
             Assert.AreEqual("Alabama", summary.State);
-            Assert.AreEqual(10794.324637681162, summary.Cases.Average);
+            Assert.AreEqual(23246.166666666664, summary.Cases.Average);
             Assert.AreEqual(0, summary.Cases.Minimum.Count);
-            Assert.AreEqual(new DateTime(2020, 1, 22), summary.Cases.Minimum.Date);
+            Assert.AreEqual(new DateTime(2023, 1, 1), summary.Cases.Minimum.Date);
             Assert.AreEqual(235948, summary.Cases.Maximum.Count);
             Assert.AreEqual(new DateTime(2023, 2, 8), summary.Cases.Maximum.Date);
         }
@@ -96,8 +96,8 @@ namespace CovidServiceTest.Services
 
             Assert.AreEqual("Alabama", stateBreakdown.State);
             var breakdown = stateBreakdown.DateBreakdowns.First();
-            Assert.AreEqual(new DateTime(2020, 1, 22).AddDays(1), breakdown.Date);
-            Assert.AreEqual(0, breakdown.TotalCases);
+            Assert.AreEqual(new DateTime(2023, 1, 1).AddDays(1), breakdown.Date);
+            Assert.AreEqual(1568934, breakdown.TotalCases);
             Assert.AreEqual(0, breakdown.NewCases);
             Assert.AreEqual(0, breakdown.RatePercentage);
 

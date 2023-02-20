@@ -6,4 +6,3 @@
 /.vs/CovidService
 bin/
 obj/
-*.csv
