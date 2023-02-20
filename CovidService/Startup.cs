@@ -1,5 +1,6 @@
 using CovidService.Repositories;
 using CovidService.Services.County;
+using CovidService.Services.Github;
 using CovidService.Services.State;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

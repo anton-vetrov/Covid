@@ -45,6 +45,8 @@ namespace CovidServiceTest.Repositories
             Assert.AreEqual("Alabama", state.Name);
         }
 
+        /* 
+        // This is quicker than to run Postman
         [TestMethod]
         public async Task GetStatesAsync_RealHttpRequest_ReturnsList()
         {
@@ -61,19 +63,8 @@ namespace CovidServiceTest.Repositories
             var anotherState = await file.GetStateAsync("California");
             Assert.AreEqual(60, anotherState.Counties.Count());
             Assert.AreEqual("California", anotherState.Name);
-
-            _githubServiceLogger.Verify(
-                // TODO Verify log string
-                x => x.Log<GithubService>(
-                    It.Is<LogLevel>(x => x == LogLevel.Warning),
-                    It.IsAny<EventId>(),
-                    It.IsAny<GithubService>(),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<GithubService, Exception, string>>()
-                ),
-                Times.AtLeastOnce
-            );
         }
+        */
 
         [TestMethod]
         public async Task GetStateAsync_NotFound_ReturnsNull()

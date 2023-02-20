@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using CovidService.Repositories;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -11,41 +12,37 @@ namespace CovidService.Services.Github
     public class GithubService : IGithubService
     {
         private readonly ILogger<GithubService> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
 
         private Task<Stream> _downloadStreamTask;
 
         public GithubService(ILogger<GithubService> logger, IConfiguration configuration, HttpClient httpClient)
         {
             _logger = logger;
-            _downloadStreamTask = httpClient.GetStreamAsync(configuration["CovidCasesUrl"]);
+            _configuration = configuration;
+            _httpClient = httpClient;
         }
 
-        public async Task<Stream> DownloadFile()
+        private static readonly object _lock = new Object();
+        public Task<Stream> DownloadFile()
         {
-            if (_downloadStreamTask.Status == TaskStatus.RanToCompletion)
+            lock (_lock)
             {
-                // TODO _logger.LogWarning("File download has finished!"); doesn't hit a mock 
-                _logger.Log(
-                    LogLevel.Warning,
-                    0,
-                    this,
-                    null,
-                    (state, exception) =>
+                if (_downloadStreamTask == null)
+                {
+                    try
                     {
-                        return "File download has finished!";
+                        _downloadStreamTask = _httpClient.GetStreamAsync(_configuration["CovidCasesUrl"]);
                     }
-                );
+                    catch (Exception)
+                    {
+                        throw new GithubException();
+                    }
+                }
             }
 
-            try
-            {
-                var stream = await _downloadStreamTask;
-                return stream;
-            }
-            catch (Exception)
-            {
-                throw new GithubException();
-            }
+            return _downloadStreamTask;
         }
     }
 }
