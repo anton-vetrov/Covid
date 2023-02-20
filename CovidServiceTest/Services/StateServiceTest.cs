@@ -9,6 +9,7 @@ using System.Linq;
 using CovidService.Services.County.Extensions;
 using CovidService.Models;
 using CovidService.Services.State;
+using System.Threading.Tasks;
 
 namespace CovidServiceTest.Services
 {
@@ -42,9 +43,9 @@ namespace CovidServiceTest.Services
 
 
         [TestMethod]
-        public void GetSummary_ValidStateName_Returns()
+        public async Task GetSummary_ValidStateName_Returns()
         {
-            var summary = _stateService.GetSummary("Alabama", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
+            var summary = await _stateService.GetSummary("Alabama", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
 
             Assert.AreEqual("Alabama", summary.State);
             Assert.AreEqual(23512.792753623184, summary.Cases.Average);
@@ -55,9 +56,9 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetSummary_ValidStateNameBlankRange_ReturnsAll()
+        public async Task GetSummary_ValidStateNameBlankRange_ReturnsAll()
         {
-            var summary = _stateService.GetSummary("Alabama", StatExtension._blankDateTime, StatExtension._blankDateTime);
+            var summary = await _stateService.GetSummary("Alabama", StatExtension._blankDateTime, StatExtension._blankDateTime);
 
             Assert.AreEqual("Alabama", summary.State);
             Assert.AreEqual(10794.324637681162, summary.Cases.Average);
@@ -68,17 +69,17 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetSummary_InvalidStateName_ReturnsNull()
+        public async Task GetSummary_InvalidStateName_ReturnsNull()
         {
-            var summary = _stateService.GetSummary("AAA", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
+            var summary = await _stateService.GetSummary("AAA", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
 
             Assert.AreEqual(null, summary);
         }
 
         [TestMethod]
-        public void GetBreakdownAndRate_ValidStateName_Returns()
+        public async Task GetBreakdownAndRate_ValidStateName_Returns()
         {
-            var stateBreakdown = _stateService.GetBreakdownAndRate("Alabama", new DateTime(2023, 02, 07), new DateTime(2023, 02, 13));
+            var stateBreakdown = await _stateService.GetBreakdownAndRate("Alabama", new DateTime(2023, 02, 07), new DateTime(2023, 02, 13));
 
             Assert.AreEqual("Alabama", stateBreakdown.State);
             var breakdown = stateBreakdown.DateBreakdowns.First();
@@ -89,9 +90,9 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetBreakdownAndRate_ValidStateNameBlankRange_ReturnsAll()
+        public async Task GetBreakdownAndRate_ValidStateNameBlankRange_ReturnsAll()
         {
-            var stateBreakdown = _stateService.GetBreakdownAndRate("Alabama", StatExtension._blankDateTime, StatExtension._blankDateTime);
+            var stateBreakdown = await _stateService.GetBreakdownAndRate("Alabama", StatExtension._blankDateTime, StatExtension._blankDateTime);
 
             Assert.AreEqual("Alabama", stateBreakdown.State);
             var breakdown = stateBreakdown.DateBreakdowns.First();
@@ -108,17 +109,17 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
-        public void GetBreakdownAndRate_InvalidStateName_ReturnsNull()
+        public async Task GetBreakdownAndRate_InvalidStateName_ReturnsNull()
         {
-            var stateBreakdown = _stateService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
+            var stateBreakdown = await _stateService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
 
             Assert.AreEqual(null, stateBreakdown);
         }
 
         [TestMethod]
-        public void GetRate_ValidStateName_Returns()
+        public async Task GetRate_ValidStateName_Returns()
         {
-            var rate = _stateService.GetRate("Alabama", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
+            var rate = await _stateService.GetRate("Alabama", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
 
             Assert.AreEqual(12, rate.DateRates.Count());
             Assert.AreEqual("Alabama", rate.State);

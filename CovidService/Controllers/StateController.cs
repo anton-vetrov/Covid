@@ -17,9 +17,9 @@ namespace CovidService.Controllers
     public class StateController : ControllerBase
     {
         private readonly ILogger<StateController> _logger;
-        private Services.State.IStateService _stateService;
+        private IStateService _stateService;
 
-        public StateController(ILogger<StateController> logger, Services.State.IStateService stateService)
+        public StateController(ILogger<StateController> logger, IStateService stateService)
         {
             _logger = logger;
             _stateService = stateService;
@@ -37,11 +37,11 @@ namespace CovidService.Controllers
         /// <param name="endDate"></param>
         /// <returns></returns>
         [HttpGet("Summary")]
-        public Services.State.StateSummary GetSummary(string state, DateTime startDate, DateTime endDate) 
+        public async Task<StateSummary> GetSummary(string state, DateTime startDate, DateTime endDate) 
         {
             ValidateInput(state, startDate, endDate);
 
-            var summary = _stateService.GetSummary(state, startDate, endDate);
+            var summary = await _stateService.GetSummary(state, startDate, endDate);
             if (summary == null)
                 throw (new StateNotFoundException());
 
@@ -49,11 +49,11 @@ namespace CovidService.Controllers
         }
 
         [HttpGet("Breakdown")]
-        public StateBreakdown GetBreakdown(string state, DateTime startDate, DateTime endDate)
+        public async Task<StateBreakdown> GetBreakdown(string state, DateTime startDate, DateTime endDate)
         {
             ValidateInput(state, startDate, endDate);
 
-            var breakdown = _stateService.GetBreakdownAndRate(state, startDate, endDate);
+            var breakdown = await _stateService.GetBreakdownAndRate(state, startDate, endDate);
             if (breakdown == null)
                 throw (new StateNotFoundException());
 
@@ -61,11 +61,11 @@ namespace CovidService.Controllers
         }
 
         [HttpGet("Rate")]
-        public StateRate GetRate(string state, DateTime startDate, DateTime endDate)
+        public async Task<StateRate> GetRate(string state, DateTime startDate, DateTime endDate)
         {
             ValidateInput(state, startDate, endDate);
 
-            var rate = _stateService.GetRate(state, startDate, endDate);
+            var rate = await _stateService.GetRate(state, startDate, endDate);
             if (rate == null)
                 throw (new StateNotFoundException());
 

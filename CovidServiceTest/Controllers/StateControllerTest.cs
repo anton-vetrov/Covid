@@ -9,6 +9,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CovidServiceTest
 {
@@ -23,22 +24,22 @@ namespace CovidServiceTest
         {
             _serviceMock = new Mock<IStateService>();
             _serviceMock.Setup(x => x.GetSummary(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns(new StateSummary());
+                .Returns(Extensions.NewTask <StateSummary>());
             _serviceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns(new StateBreakdown());
+                .Returns(Extensions.NewTask <StateBreakdown>());
             _serviceMock.Setup(x => x.GetRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns(new StateRate());
+                .Returns(Extensions.NewTask <StateRate>());
         }
 
         [TestMethod]
-        public void GetSummary_Returns()
+        public async Task GetSummary_Returns()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
             _serviceMock.Setup(x => x.GetSummary(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns(new StateSummary() { State = "Alabama" });
+                .Returns(Extensions.NewTask <StateSummary>((summary) => { summary.State = "Alabama"; }));
 
-            var summary = controller.GetSummary("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01));
+            var summary = await controller.GetSummary("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01));
 
             Assert.IsNotNull(summary);
             Assert.AreEqual("Alabama", summary.State);
@@ -46,57 +47,57 @@ namespace CovidServiceTest
         }
 
         [TestMethod]
-        public void GetSummary_BlankState_Throws()
+        public async Task GetSummary_BlankState_Throws()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<BlankStateException>(
+            await Assert.ThrowsExceptionAsync<BlankStateException>(
                 () => controller.GetSummary("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
             );
         }
 
         [TestMethod]
-        public void GetSummary_InvalidDateRange_Throws()
+        public async Task GetSummary_InvalidDateRange_Throws()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetSummary("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01))
             );
         }
 
         [TestMethod]
-        public void GetSummary_BlankStartDate_Throws()
+        public async Task GetSummary_BlankStartDate_Throws()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetSummary("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
             );
         }
 
         [TestMethod]
-        public void GetSummary_InvalidStateName_Throws()
+        public async Task GetSummary_InvalidStateName_Throws()
         {
             _serviceMock.Setup(x => x.GetSummary(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns((StateSummary)null);
+                .Returns(Task.FromResult<StateSummary>(null));
 
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<StateNotFoundException>(
+            await Assert.ThrowsExceptionAsync<StateNotFoundException>(
                 () => controller.GetSummary("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
             );
         }
 
         [TestMethod]
-        public void GetBreakdown_Returns()
+        public async Task GetBreakdown_Returns()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
             _serviceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns(new StateBreakdown() { State = "Alabama" });
+                .Returns(Extensions.NewTask <StateBreakdown>((breakdown) => { breakdown.State = "Alabama"; }));
 
-            var breakdown = controller.GetBreakdown("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01));
+            var breakdown = await controller.GetBreakdown("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01));
 
             Assert.IsNotNull(breakdown);
             Assert.AreEqual("Alabama", breakdown.State);
@@ -104,57 +105,57 @@ namespace CovidServiceTest
         }
 
         [TestMethod]
-        public void GetBreakdown_BlankState_Throws()
+        public async Task GetBreakdown_BlankState_Throws()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<BlankStateException>(
+            await Assert.ThrowsExceptionAsync<BlankStateException>(
                 () => controller.GetBreakdown("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
             );
         }
 
         [TestMethod]
-        public void GetBreakdown_InvalidDateRange_Throws()
+        public async Task GetBreakdown_InvalidDateRange_Throws()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetBreakdown("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01))
             );
         }
 
         [TestMethod]
-        public void GetBreakdown_BlankStartDate_Throws()
+        public async Task GetBreakdown_BlankStartDate_Throws()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetBreakdown("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
             );
         }
 
         [TestMethod]
-        public void GetBreakdown_InvalidStateName_Throws()
+        public async Task GetBreakdown_InvalidStateName_Throws()
         {
             _serviceMock.Setup(x => x.GetBreakdownAndRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns((StateBreakdown)null);
+                .Returns(Task.FromResult<StateBreakdown>(null));
 
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<StateNotFoundException>(
+            await Assert.ThrowsExceptionAsync<StateNotFoundException>(
                 () => controller.GetBreakdown("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
             );
         }
 
         [TestMethod]
-        public void GetRate_Returns()
+        public async Task GetRate_Returns()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
             _serviceMock.Setup(x => x.GetRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns(new StateRate() { State = "Alabama" });
+                .Returns(Extensions.NewTask<StateRate>((rate) => { rate.State = "Alabama";  }));
 
-            var breakdown = controller.GetRate("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01));
+            var breakdown = await controller.GetRate("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01));
 
             Assert.IsNotNull(breakdown);
             Assert.AreEqual("Alabama", breakdown.State);
@@ -162,44 +163,44 @@ namespace CovidServiceTest
         }
 
         [TestMethod]
-        public void GetRate_BlankState_Throws()
+        public async Task GetRate_BlankState_Throws()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<BlankStateException>(
+            await Assert.ThrowsExceptionAsync<BlankStateException>(
                 () => controller.GetRate("", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
             );
         }
 
         [TestMethod]
-        public void GetRate_InvalidDateRange_Throws()
+        public async Task GetRate_InvalidDateRange_Throws()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetRate("Test", new DateTime(2023, 02, 01), new DateTime(2023, 01, 01))
             );
         }
 
         [TestMethod]
-        public void GetRate_BlankStartDate_Throws()
+        public async Task GetRate_BlankStartDate_Throws()
         {
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<UnexpectedDateRangeException>(
+            await Assert.ThrowsExceptionAsync<UnexpectedDateRangeException>(
                 () => controller.GetRate("Test", StatExtension._blankDateTime, new DateTime(2023, 01, 01))
             );
         }
 
         [TestMethod]
-        public void GetRate_InvalidStateName_Throws()
+        public async Task GetRate_InvalidStateName_Throws()
         {
             _serviceMock.Setup(x => x.GetRate(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns((StateRate)null);
+                .Returns(Task.FromResult<StateRate>(null));
 
             var controller = new StateController(_logger, _serviceMock.Object);
 
-            Assert.ThrowsException<StateNotFoundException>(
+            await Assert.ThrowsExceptionAsync<StateNotFoundException>(
                 () => controller.GetRate("Alabama", new DateTime(2023, 01, 01), new DateTime(2023, 02, 01))
             );
         }

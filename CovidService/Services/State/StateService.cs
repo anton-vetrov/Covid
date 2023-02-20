@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.Xml;
+using System.Threading.Tasks;
 using CovidService.Repositories;
 using CovidService.Services.County.Extensions;
 using CovidService.Services.State;
@@ -10,7 +11,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace CovidService.Services.County
 {
-    public class StateService : State.IStateService
+    public class StateService : IStateService
     {
         private IRepository _repository;
         public StateService(IRepository repository)
@@ -18,9 +19,9 @@ namespace CovidService.Services.County
             _repository = repository;
         }
 
-        public State.StateSummary GetSummary(string stateName, DateTime startDate, DateTime endDate)
+        public async Task<StateSummary> GetSummary(string stateName, DateTime startDate, DateTime endDate)
         {
-            var state = _repository.GetState(stateName);
+            var state = await _repository.GetStateAsync(stateName);
             if (state == null)
                 return null;
 
@@ -41,7 +42,7 @@ namespace CovidService.Services.County
 
             aggregatedSummary.Cases.Average /= (double)state.Counties.Count();
 
-            return new State.StateSummary()
+            return new StateSummary()
             {
                 State = stateName,
                 Cases = aggregatedSummary.Cases
@@ -49,9 +50,9 @@ namespace CovidService.Services.County
 
         }
 
-        public StateBreakdown GetBreakdownAndRate(string stateName, DateTime startDate, DateTime endDate)
+        public async Task<StateBreakdown> GetBreakdownAndRate(string stateName, DateTime startDate, DateTime endDate)
         {
-            var state = _repository.GetState(stateName);
+            var state = await _repository.GetStateAsync(stateName);
             if (state == null)
                 return null;
 
@@ -92,9 +93,9 @@ namespace CovidService.Services.County
             };
         }
 
-        public StateRate GetRate(string state, DateTime startDate, DateTime endDate)
+        public async Task<StateRate> GetRate(string state, DateTime startDate, DateTime endDate)
         {
-            var breakdown = GetBreakdownAndRate(state, startDate, endDate);
+            var breakdown = await GetBreakdownAndRate(state, startDate, endDate);
 
             var rate = new StateRate() { 
                 State = breakdown.State,
