@@ -57,6 +57,7 @@ namespace CovidServiceTest.Repositories
             Assert.AreEqual("California", anotherState.Name);
 
             _githubServiceLogger.Verify(
+                // TODO Verify log string
                 x => x.Log<GithubService>(
                     It.Is<LogLevel>(x => x == LogLevel.Warning),
                     It.IsAny<EventId>(),
