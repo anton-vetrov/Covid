@@ -125,27 +125,6 @@ namespace CovidService.Repositories
                 }
             }
         }
-        public State GetState(string stateName)
-        {
-            State state;
-            if (_countries[US].States.TryGetValue(stateName, out state))
-                return state;
-
-            return null;
-        }
-
-        public List<County> GetCounties()
-        {
-            var counties = new List<County>();
-
-            List<State> states = _countries[US].States.Values.ToList();
-            foreach (var state in states)
-            {
-                counties.AddRange(state.Counties.Values);
-            }
-
-            return counties;
-        }
 
         public Task<State> GetStateAsync(string stateName)
         {

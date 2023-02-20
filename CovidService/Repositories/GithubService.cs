@@ -25,7 +25,7 @@ namespace CovidService.Repositories
         {
             if (_downloadStreamTask.Status == TaskStatus.RanToCompletion)
             {
-                // TODO This doesn't hit a mock _logger.LogWarning("File already downloaded!");
+                // TODO _logger.LogWarning("File already downloaded!"); doesn't hit a mock 
                 _logger.Log(
                     LogLevel.Warning,
                     0,

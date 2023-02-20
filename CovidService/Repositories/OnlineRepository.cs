@@ -51,20 +51,10 @@ namespace CovidService.Repositories
             }
         }
 
-        public State GetState(string stateName)
-        {
-            return _syncRepository.GetState(stateName);
-        }
-
         public async Task<State> GetStateAsync(string stateName)
         {
             var stream = await _githubService.DownloadFile();
             return await GetFileRepository(stream).GetStateAsync(stateName);
-        }
-
-        public List<County> GetCounties()
-        {
-            return _syncRepository.GetCounties();
         }
 
         public async Task<List<County>> GetCountiesAsync()
