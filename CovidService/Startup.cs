@@ -54,7 +54,7 @@ namespace CovidService
                 app.UseExceptionHandler("/error");
             }
 
-            // TODO app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 

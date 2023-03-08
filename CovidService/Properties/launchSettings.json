@@ -7,6 +7,20 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/CovidApi/County/Rate?pageIndex=0&pageSize=5&county=Autauga&startDate=2-1-2020&endDate=2-15-2023",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Dev",
+        "ASPNETCORE_Kestrel__Certificates__Default__Path": "/.aspnet/https/CovidService.pfx",
+        "ASPNETCORE_Kestrel__Certificates__Default__Password": "7ef89553-00e0-40dd-8667-1b71b96cf2bc"
+      },
+      "publishAllPorts": true,
+      "useSSL": true,
+      "httpPort": 49153,
+      "sslPort": 49154,
+      "DockerfileRunArguments": "--mount type=bind,source=c:/Users/AntonV/AppData/Roaming/ASP.NET/Https,target=/.aspnet/https"
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",

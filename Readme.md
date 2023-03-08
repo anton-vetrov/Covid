@@ -5,7 +5,8 @@ The following assumptions were made during the implementation:
 4. Paging is introduced for large sets of data
 
 How to build the project:
-1. Open Visual Studio 2022 and hit build all the solution
+1. Optionally update DockerfileRunArguments variable in launchSettings.json if you are launching using Docker profile
+2. Open Visual Studio 2022 and hit build all the solution
 
 How run the project:
 1. Set CovidService as an active project and Start without a debugging(Ctrl-F5)
