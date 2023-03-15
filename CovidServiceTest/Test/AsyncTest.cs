@@ -2,8 +2,10 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Drawing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CovidServiceTest.Test
@@ -24,12 +26,16 @@ namespace CovidServiceTest.Test
 
             var eggs = await eggsTask;
             Console.WriteLine("eggs are ready");
-
+            /*
             var bacon = await baconTask;
             Console.WriteLine("bacon is ready");
 
-            var toast = await toastTask;
+            var toast = toastTask;
             Console.WriteLine("toast is ready");
+
+            Task.Delay(5000).Wait();
+            Console.WriteLine(toast.Exception.InnerExceptions.First());
+            */
 
             Juice oj = PourOJ();
             Console.WriteLine("oj is ready");
