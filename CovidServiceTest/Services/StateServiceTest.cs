@@ -10,6 +10,8 @@ using CovidService.Services.County.Extensions;
 using CovidService.Models;
 using CovidService.Services.State;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace CovidServiceTest.Services
 {
@@ -129,6 +131,27 @@ namespace CovidServiceTest.Services
         }
 
         // TODO More tests for GetRate, even though it is uses GetBreakdownAndRate under the hood
+        [TestMethod]
+        public void Test()
+        {
+            var array1 = new Record[] { new Record() { Id = 1, Name = "Test1"}, new Record() { Id = 3, Name = "Test3" } , new Record() { Id = 5, Name = "Test5" } };
+            var array2 = new Record[] { new Record() { Id = 2, Name = "Test2" }, new Record() { Id = 3, Name = "array3" }, new Record() { Id = 5, Name = "array5" } };
+
+            var join = array1.GroupJoin(
+                array2,
+                record1 => record1.Id,
+                record2 => record2.Id,
+                (record1, record2Collection) => new { Id = record1.Id, Name1 = record1.Name, Name2 = record2Collection.DefaultIfEmpty(new Record() { Name = "<none>"}).First().Name}
+            );
+
+            Assert.AreEqual(join, new Record[] {});
+        }
+
+        public class Record
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
 
     }
 }
