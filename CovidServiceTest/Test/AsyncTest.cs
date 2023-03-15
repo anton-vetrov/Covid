@@ -15,7 +15,7 @@ namespace CovidServiceTest.Test
     {
 
         [TestMethod]
-        public async Task Async_Throws()
+        public async Task Async_SubOptimal_Throws()
         {
             Coffee cup = PourCoffee();
             Console.WriteLine("coffee is ready");
@@ -26,20 +26,84 @@ namespace CovidServiceTest.Test
 
             var eggs = await eggsTask;
             Console.WriteLine("eggs are ready");
-            /*
+            
             var bacon = await baconTask;
             Console.WriteLine("bacon is ready");
 
+
+            // Missing await swallows the exception
             var toast = toastTask;
             Console.WriteLine("toast is ready");
 
             Task.Delay(5000).Wait();
             Console.WriteLine(toast.Exception.InnerExceptions.First());
-            */
+            
 
             Juice oj = PourOJ();
             Console.WriteLine("oj is ready");
             Console.WriteLine("Breakfast is ready!");
+        }
+
+
+        [TestMethod]
+        public async Task Async_Optimal_Throws()
+        {
+            Coffee cup = PourCoffee();
+            Console.WriteLine("coffee is ready");
+
+            var eggsTask = FryEggsAsync(2);
+            var baconTask = FryBaconAsync(3);
+            var toastTask = MakeToastWithButterAndJamAsync(2);
+
+            var breakfastTasks = new List<Task> { eggsTask, baconTask, toastTask };
+            while (breakfastTasks.Count > 0)
+            {
+                Task finishedTask = await Task.WhenAny(breakfastTasks);
+                if (finishedTask == eggsTask)
+                {
+                    Console.WriteLine("eggs are ready");
+                }
+                else if (finishedTask == baconTask)
+                {
+                    Console.WriteLine("bacon is ready");
+                }
+                else if (finishedTask == toastTask)
+                {
+                    Console.WriteLine("toast is ready");
+                }
+
+                if (finishedTask == toastTask)
+                    await Assert.ThrowsExceptionAsync<System.InvalidOperationException>(
+                        () => finishedTask
+                    );
+                else
+                    await finishedTask;
+
+                breakfastTasks.Remove(finishedTask);
+            }
+
+            Juice oj = PourOJ();
+            Console.WriteLine("oj is ready");
+            Console.WriteLine("Breakfast is ready!");
+        }
+
+        [TestMethod]
+        public async Task Async_ColdStart_Returns()
+        {
+            var task = CreateColdTask();
+            Console.WriteLine("Async_ColdStart_Returns");
+            task.Start();
+            var retVal = await task;
+
+            Assert.AreEqual(10, retVal);
+        }
+
+        [TestMethod]
+        public async Task Async_HotStart_Returns()
+        {
+            var retVal = await CreateHotTask();
+
+            Assert.AreEqual(10, retVal);
         }
 
         internal class Bacon { }
@@ -47,6 +111,33 @@ namespace CovidServiceTest.Test
         internal class Egg { }
         internal class Juice { }
         internal class Toast { }
+
+        private static Task<int> CreateHotTask()
+        {
+            return Task.Run<int>(
+                () =>
+                {
+                    Console.WriteLine("Hot task started");
+                    Task.Delay(2000).Wait();
+                    Console.WriteLine("Hot task finished");
+
+                    return 10;
+                }
+            );
+        }
+
+        private static Task<int> CreateColdTask()
+        {
+            return new Task<int>(() =>
+            {
+                Console.WriteLine("Cold task started");
+                Task.Delay(2000).Wait();
+                Console.WriteLine("Cold task finished");
+
+                return 10;
+            });
+        }
+
 
         private static Juice PourOJ()
         {
