@@ -24,7 +24,7 @@ steps:
     requestedMinorVersion: 0
 
 - task: DotNetCoreCLI@2
-  displayName: 'Run unit tests - $(BuildConfiguration)'
+  displayName: 'Running unit tests - $(BuildConfiguration)'
   inputs:
     command: test
     arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
@@ -34,6 +34,7 @@ steps:
     requestedMinorVersion: 0
 
 - task: DotNetCoreCLI@2
+  displayName: 'Publishing'
   inputs:
     command: publish
     publishWebProjects: True
@@ -41,6 +42,7 @@ steps:
     zipAfterPublish: True
 
 - task: PublishPipelineArtifact@1
+  displayName: 'Publishing to pipeline'
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)' 
     artifactName: 'CovidService'
