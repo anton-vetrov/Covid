@@ -14,7 +14,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Dev",
         "ASPNETCORE_Kestrel__Certificates__Default__Path": "/.aspnet/https/CovidService.pfx",
-        "ASPNETCORE_Kestrel__Certificates__Default__Password": "7ef89553-00e0-40dd-8667-1b71b96cf2bc"
+        "ASPNETCORE_Kestrel__Certificates__Default__Password": "95c2d326-abaf-4f89-a712-a92a658282f6"
       },
       "publishAllPorts": true,
       "useSSL": true,
