@@ -15,19 +15,20 @@ variables:
 
 steps:
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: 'Building $(buildConfiguration)'
   inputs:
     command: build
-    projects: '**/*.csproj'
+    projects: '**/*.sln'
     arguments: '--configuration $(buildConfiguration)'
     requestedMajorVersion: 6
     requestedMinorVersion: 0
 
 - task: DotNetCoreCLI@2
-  displayName: Test
+  displayName: 'Run unit tests - $(buildConfiguration)'
   inputs:
     command: test
-    projects: '**/*Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+    projects: '**/*Test/*.csproj'
+    publishTestResults: true
     requestedMajorVersion: 6
     requestedMinorVersion: 0
