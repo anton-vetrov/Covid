@@ -8,14 +8,14 @@ trigger:
 - feature/*
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest #code coverage is supported on windows image only
 
 variables:
   buildConfiguration: 'Release'
 
 steps:
 - task: DotNetCoreCLI@2
-  displayName: 'Building $(buildConfiguration)'
+  displayName: 'Building - $(buildConfiguration)'
   inputs:
     command: build
     projects: '**/*.sln'
