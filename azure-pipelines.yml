@@ -23,10 +23,8 @@ steps:
     requestedMajorVersion: 6
     requestedMinorVersion: 0
 
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
-
 - task: DotNetCoreCLI@2
+  displayName: Test
   inputs:
     command: test
     projects: '**/*Tests/*.csproj'
