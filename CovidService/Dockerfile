@@ -5,7 +5,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-windowsservercore-ltsc2022 AS build
 WORKDIR /src
 COPY ["CovidService/CovidService.csproj", "CovidService/"]
 RUN dotnet restore "CovidService/CovidService.csproj"
