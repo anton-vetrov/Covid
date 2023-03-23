@@ -49,6 +49,7 @@ steps:
 #    artifactName: 'CovidService'
 
 - task: Docker@2
+  displayName: 'Building and pushing Docker image'
   inputs:
     containerRegistry: 'antonvetrov-acr-connection'
     repository: 'covid-repository'
