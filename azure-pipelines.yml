@@ -11,23 +11,24 @@ pool:
   vmImage: windows-latest #code coverage is supported on windows image only
 
 variables:
-  BuildConfiguration: 'Release'
+  buildConfiguration: 'Release'
+  imageName: 'covid-covidservice-docker'
 
 steps:
 - task: DotNetCoreCLI@2
-  displayName: 'Building - $(BuildConfiguration)'
+  displayName: 'Building - $(buildConfiguration)'
   inputs:
     command: build
     projects: '**/*.sln'
-    arguments: '--configuration $(BuildConfiguration)'
+    arguments: '--configuration $(buildConfiguration)'
     requestedMajorVersion: 6
     requestedMinorVersion: 0
 
 - task: DotNetCoreCLI@2
-  displayName: 'Running unit tests - $(BuildConfiguration)'
+  displayName: 'Running unit tests - $(buildConfiguration)'
   inputs:
     command: test
-    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
     projects: '**/*Test/*.csproj'
     publishTestResults: true
     requestedMajorVersion: 6
@@ -38,11 +39,18 @@ steps:
   inputs:
     command: publish
     publishWebProjects: True
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
 
-- task: PublishPipelineArtifact@1
-  displayName: 'Publishing to pipeline'
+#- task: PublishPipelineArtifact@1
+#  displayName: 'Publishing to pipeline'
+#  inputs:
+#    targetPath: '$(Build.ArtifactStagingDirectory)' 
+#    artifactName: 'CovidService'
+
+- task: Docker@2
   inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'CovidService'
+    containerRegistry: 'antonvetrov-acr-connection'
+    repository: 'covid-repository'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
