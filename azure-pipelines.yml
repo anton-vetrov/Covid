@@ -20,51 +20,37 @@ stages:
       - job: BuildCovidService
         displayName: 'Build CovidService'
         steps:
-      - task: DotNetCoreCLI@2
-        displayName: 'Building - $(buildConfiguration)'
-        inputs:
-          command: build
-          projects: '**/*.sln'
-          arguments: '--configuration $(buildConfiguration)'
-          requestedMajorVersion: 6
-          requestedMinorVersion: 0
+          - task: DotNetCoreCLI@2
+            displayName: 'Building - $(buildConfiguration)'
+            inputs:
+              command: build
+              projects: '**/*.sln'
+              arguments: '--configuration $(buildConfiguration)'
+              requestedMajorVersion: 6
+              requestedMinorVersion: 0
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Running unit tests - $(buildConfiguration)'
-        inputs:
-          command: test
-          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
-          projects: '**/*Test/*.csproj'
-          publishTestResults: true
-          requestedMajorVersion: 6
-          requestedMinorVersion: 0
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Publishing'
-        inputs:
-          command: publish
-          publishWebProjects: True
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-          zipAfterPublish: True
-
+          - task: DotNetCoreCLI@2
+            displayName: 'Running unit tests - $(buildConfiguration)'
+            inputs:
+              command: test
+              arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+              projects: '**/*Test/*.csproj'
+              publishTestResults: true
+              requestedMajorVersion: 6
+              requestedMinorVersion: 0
+          
       - job: PublishCovidService
-          displayName: 'Publishing CovidService'
-          condition: eq(variables['Build.SourceBranchName'], 'main')
-          steps:
-            - task: PublishPipelineArtifact@1
-                displayName: 'Publishing to pipeline'
-                inputs:
-                  targetPath: '$(Build.ArtifactStagingDirectory)'
-                  artifactName: 'CovidService'
-
-             - task: Docker@2
-                displayName: 'Building and pushing Docker image'
-                inputs:
-                  containerRegistry: 'antonvetrov-acr-connection'
-                  repository: 'covid-repository'
-                  command: 'buildAndPush'
-                  Dockerfile: '**/Dockerfile'
-                  buildContext: '**/../'
-                  tags: |
-                    latest
-                    $(Build.BuildId)
+        displayName: 'Publishing CovidService'
+        condition: eq(variables['Build.SourceBranchName'], 'main')
+        steps:
+          - task: Docker@2
+            displayName: 'Building and pushing Docker image'
+            inputs:
+              containerRegistry: 'antonvetrov-acr-connection'
+              repository: 'covid-repository'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
+              buildContext: '**/../'
+              tags: |
+                latest
+                $(Build.BuildId)
