@@ -40,8 +40,8 @@ stages:
               requestedMinorVersion: 0
           
       - job: PublishCovidService
-        displayName: 'Publishing CovidService'
-        condition: eq(variables['Build.SourceBranchName'], 'main')
+        displayName: 'Publish CovidService'
+        condition: eq(variables['Build.SourceBranchName'], 'master')
         steps:
           - task: Docker@2
             displayName: 'Building and pushing Docker image'
