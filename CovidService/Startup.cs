@@ -54,7 +54,8 @@ namespace CovidService
                 app.UseExceptionHandler("/error");
             }
 
-            app.UseHttpsRedirection();
+            // TODO Azure App Service terminates SSL
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
