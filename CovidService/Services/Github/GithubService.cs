@@ -31,18 +31,19 @@ namespace CovidService.Services.Github
             {
                 if (_downloadStreamTask == null)
                 {
-                    try
-                    {
-                        _downloadStreamTask = _httpClient.GetStreamAsync(_configuration["CovidCasesUrl"]);
-                    }
-                    catch (Exception)
-                    {
-                        throw new GithubException();
-                    }
-                }
-            }
+                    _downloadStreamTask = _httpClient
+                        .GetStreamAsync(_configuration["CovidCasesUrl"])
+                        .ContinueWith<Stream>((task) =>
+                        {
+                            if (task.Status == TaskStatus.RanToCompletion)
+                                return task.Result;
 
-            return _downloadStreamTask;
+                            throw new GithubException();
+                        });
+                    
+                }
+                return _downloadStreamTask;
+            }
         }
     }
 }
