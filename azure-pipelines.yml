@@ -8,7 +8,7 @@ trigger:
 - feature/*
 
 pool:
-  vmImage: windows-latest #code coverage is supported on windows image only
+  vmImage: ubuntu-latest #code coverage is supported on windows image only
 
 variables:
   buildConfiguration: 'Release'
