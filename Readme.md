@@ -8,8 +8,12 @@ How to build the project:
 1. Optionally update DockerfileRunArguments variable in launchSettings.json if you are launching using Docker profile
 2. Open Visual Studio 2022 and hit build all the solution
 
-How run the project:
+How to run the project locally:
 1. Set CovidService as an active project and Start without a debugging(Ctrl-F5)
 2. Swagger document is available at http://localhost:5000/swagger/index.html
 3. Postman collection is included in Covid\CovidService.postman_collection.json
 4. Import Postman collection into Postman and use calls to test the service out
+
+How to run the project deployed in Azure:
+1. Open swagger URL https://app-av-covidservice-test.azurewebsites.net/swagger/index.html
+2. Use swagger, or Postman collection included with the project to run APIs
