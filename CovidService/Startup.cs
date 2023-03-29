@@ -31,6 +31,7 @@ namespace CovidService
         {
             services.AddScoped<ICountyService, CountyService>();
             services.AddScoped<IStateService, StateService>();
+            services.AddSingleton<IDailyTimerService, DailyTimerService>();
             services.AddSingleton<IRepository, OnlineRepository>();
             services.AddHttpClient<IGithubService, GithubService>();
             services.AddControllers(options =>
