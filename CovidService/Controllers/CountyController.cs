@@ -41,7 +41,7 @@ namespace CovidService.Controllers
         [HttpGet("Summary")]
         public async Task<PagedCountySummary> GetSummary(string county, DateTime startDate, DateTime endDate, int pageIndex, int pageSize)
         {
-            _logger.LogInformation("GetSummary={0}", county);
+            //_logger.LogInformation("GetSummary={0}", county);
 
             ValidateInput(county, startDate, endDate, pageIndex, pageSize);
 

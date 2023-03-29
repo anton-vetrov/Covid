@@ -1,4 +1,5 @@
 ﻿using CovidService.Repositories;
+using DocumentFormat.OpenXml.Office2021.DocumentTasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,14 +15,16 @@ namespace CovidService.Services.Github
         private readonly ILogger<GithubService> _logger;
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
+        private readonly IDailyTimerService _dailyTimer;
 
         private Task<Stream> _downloadStreamTask;
 
-        public GithubService(ILogger<GithubService> logger, IConfiguration configuration, HttpClient httpClient)
+        public GithubService(ILogger<GithubService> logger, IConfiguration configuration, HttpClient httpClient, IDailyTimerService dailyTimer)
         {
             _logger = logger;
             _configuration = configuration;
             _httpClient = httpClient;
+            _dailyTimer = dailyTimer;
         }
 
         private static readonly object _lock = new Object();
@@ -29,8 +32,10 @@ namespace CovidService.Services.Github
         {
             lock (_lock)
             {
-                if (_downloadStreamTask == null)
+                if (_downloadStreamTask == null || _dailyTimer.IsNewDay)
                 {
+                    _logger.LogWarning("Downloading from GitHubtask IsNewDay = {}", _dailyTimer.IsNewDay);
+
                     _downloadStreamTask = _httpClient
                         .GetStreamAsync(_configuration["CovidCasesUrl"])
                         .ContinueWith<Stream>((task) =>

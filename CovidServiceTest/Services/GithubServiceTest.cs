@@ -19,8 +19,8 @@ namespace CovidServiceTest.Services
     public class GithubServiceTest
     {
         ILogger<GithubService> _logger = new Mock<ILogger<GithubService>>().Object;
-        Mock<ILogger<GithubService>> _githubServiceLogger;
         Mock<IConfiguration> _configurationMock;
+        Mock<IDailyTimerService> _dailyTimerMock;
 
         public class HttpMessageHandlerMock : HttpMessageHandler
         {
@@ -45,13 +45,17 @@ namespace CovidServiceTest.Services
             _configurationMock = new Mock<IConfiguration>();
             _configurationMock.Setup(x => x[It.Is<string>(s => s == "CovidCasesUrl")]).Returns("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv");
 
+            _dailyTimerMock = new Mock<IDailyTimerService>();
+            _dailyTimerMock.SetupGet(x => x.IsNewDay).Returns(true);
+
             //_githubServiceMock.Setup(x => x.DownloadFile()).ReturnsAsync(new MemoryStream(Properties.Resources.Covid19ConfirmedUS));
         }
 
         [TestMethod]
         public async Task DownloadFile_Returns()
         {
-            var handlerMock = new HttpMessageHandlerMock(() => {
+            var handlerMock = new HttpMessageHandlerMock(() =>
+            {
                 return new HttpResponseMessage()
                 {
                     StatusCode = System.Net.HttpStatusCode.OK,
@@ -59,7 +63,7 @@ namespace CovidServiceTest.Services
                 };
             });
             var httpClient = new HttpClient(handlerMock);
-            var service = new GithubService(_logger, _configurationMock.Object, httpClient);
+            var service = new GithubService(_logger, _configurationMock.Object, httpClient, _dailyTimerMock.Object);
 
             var stream = await service.DownloadFile();
 
@@ -70,12 +74,38 @@ namespace CovidServiceTest.Services
         public async Task DownloadFile_WrongURL_Throws()
         {
             var handlerMock = new HttpMessageHandlerMock(() => { throw (new Exception("Some http exception")); });
-            var httpClient  = new HttpClient(handlerMock);
+            var httpClient = new HttpClient(handlerMock);
 
-            var service = new GithubService(_logger, _configurationMock.Object, httpClient);
+            var service = new GithubService(_logger, _configurationMock.Object, httpClient, _dailyTimerMock.Object);
             await Assert.ThrowsExceptionAsync<GithubException>(
                 () => service.DownloadFile()
             );
+        }
+
+        [TestMethod]
+        public async Task DownloadFile_NoDownload_Returns()
+        {
+            int sendAsyncCounter = 0;
+            var handlerMock = new HttpMessageHandlerMock(() =>
+            {
+                Interlocked.Increment(ref sendAsyncCounter);
+                return new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    Content = new StreamContent(new MemoryStream(Properties.Resources.Covid19ConfirmedUS))
+                };
+            });
+            _dailyTimerMock.SetupGet(x => x.IsNewDay).Returns(false);
+
+            var httpClient = new HttpClient(handlerMock);
+            var service = new GithubService(_logger, _configurationMock.Object, httpClient, _dailyTimerMock.Object);
+
+            var stream1 = await service.DownloadFile();
+            var stream2 = await service.DownloadFile();
+
+            Assert.AreEqual(1102184, stream1.Length);
+            Assert.AreEqual(1102184, stream2.Length);
+            Assert.AreEqual(1, sendAsyncCounter);
         }
     }
 }
