@@ -12,6 +12,7 @@ using CovidService.Services.State;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Wordprocessing;
+using CovidService.Services.Exceptions;
 
 namespace CovidServiceTest.Services
 {
@@ -116,6 +117,15 @@ namespace CovidServiceTest.Services
             var stateBreakdown = await _stateService.GetBreakdownAndRate("AAA", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13));
 
             Assert.AreEqual(null, stateBreakdown);
+        }
+
+        [TestMethod]
+        public async Task GetBreakdownAndRate_NoDataAvailable_Throws()
+        {
+            await Assert.ThrowsExceptionAsync<EmptyResultException>(
+                () => _stateService.GetBreakdownAndRate("California", new DateTime(2023, 03, 21), new DateTime(2023, 03, 31))
+            );
+
         }
 
         [TestMethod]
