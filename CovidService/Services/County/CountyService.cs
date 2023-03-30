@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CovidService.Repositories;
 using CovidService.Services.County.Extensions;
+using CovidService.Services.Exceptions;
 
 namespace CovidService.Services.County
 {
@@ -53,6 +54,12 @@ namespace CovidService.Services.County
                     : county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
                 if (cases.Count() == 0)
                 {
+                    if (county.Cases.Count > 0)
+                    {
+                        var lastAvailableDate = county.Cases.Last().Key;
+                        if (lastAvailableDate < startDate)
+                            throw new EmptyResultException(lastAvailableDate);
+                    }
                     break;
                 }
 

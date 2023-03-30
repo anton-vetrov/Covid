@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CovidService.Services.Exceptions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,11 @@ namespace CovidService.Services.County.Extensions
 
                 if (cases.Count() == 0)
                 {
+                    if (county.Cases.Count > 0)
+                    {
+                        var lastAvailableDate = county.Cases.Last().Key;
+                        throw new EmptyResultException(lastAvailableDate);
+                    }
                     break;
                 }
 
@@ -85,6 +91,12 @@ namespace CovidService.Services.County.Extensions
                     : county.Cases.Where(x => x.Key >= startDate && x.Key <= endDate);
                 if (cases.Count() == 0)
                 {
+                    if (county.Cases.Count > 0)
+                    {
+                        var lastAvailableDate = county.Cases.Last().Key;
+                        if (lastAvailableDate < startDate) 
+                            throw new EmptyResultException(lastAvailableDate);
+                    }
                     break;
                 }
 

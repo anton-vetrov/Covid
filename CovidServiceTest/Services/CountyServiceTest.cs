@@ -1,7 +1,10 @@
-﻿using CovidService.Repositories;
+﻿using CovidService.Controllers.Exceptions;
+using CovidService.Repositories;
 using CovidService.Services.County;
 using CovidService.Services.County.Extensions;
+using CovidService.Services.Exceptions;
 using CovidService.Services.State;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Namotion.Reflection;
 using System;
@@ -104,7 +107,7 @@ namespace CovidServiceTest.Services
         [TestMethod]
         public async Task GetSummary_InvalidPageIndex_ReturnsEmptyList()
         {
-            var summaries = await _countyService.GetSummary("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+            var summaries = await _countyService.GetSummary("Harris", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 1, 5);
 
             Assert.AreEqual(0, summaries.CountySummaries.Count());
             Assert.AreEqual(2, summaries.TotalPagesCount);
@@ -128,6 +131,16 @@ namespace CovidServiceTest.Services
             Assert.AreEqual(0, summaries.CountySummaries.Count());
             Assert.AreEqual(0, summaries.TotalPagesCount);
         }
+
+        [TestMethod]
+        public async Task GetSummary_NoDataAvailable_Throws()
+        {
+            await Assert.ThrowsExceptionAsync<EmptyResultException>(
+                () => _countyService.GetSummary("Harris", new DateTime(2023, 03, 10), new DateTime(2023, 03, 13), 0, 10)
+            );
+
+        }
+
 
         [TestMethod]
         public async Task GetBreakdownAndRate_EmptyName_ReturnsAllTheCounties()
@@ -199,7 +212,7 @@ namespace CovidServiceTest.Services
         [TestMethod]
         public async Task GetBreakdownAndRate_InvalidPageIndex_ReturnsEmptyList()
         {
-            var breakdowns = await _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 21), new DateTime(2023, 02, 13), 1, 1);
+            var breakdowns = await _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 02, 10), new DateTime(2023, 02, 01), 1, 1);
 
             Assert.AreEqual(0, breakdowns.CountyBreakdowns.Count());
             Assert.AreEqual(2, breakdowns.TotalPagesCount);
@@ -225,6 +238,15 @@ namespace CovidServiceTest.Services
         }
 
         [TestMethod]
+        public async Task GetBreakdownAndRate_NoDataAvailable_Throws()
+        {
+            await Assert.ThrowsExceptionAsync<EmptyResultException>(
+                () => _countyService.GetBreakdownAndRate("Harris", new DateTime(2023, 03, 10), new DateTime(2023, 03, 13), 0, 10)
+            );
+
+        }
+
+        [TestMethod]
         public async Task GetRate_EmptyName_ReturnsAllTheCounties()
         {
             var rates = await _countyService.GetRate("", new DateTime(2023, 02, 01), new DateTime(2023, 02, 13), 0, 100000);
@@ -240,5 +262,6 @@ namespace CovidServiceTest.Services
         }
 
         // TODO More tests for GetRate, even though it is uses GetBreakdownAndRate under the hood
+
     }
 }
