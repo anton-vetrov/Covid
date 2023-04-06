@@ -40,6 +40,7 @@ stages:
               requestedMinorVersion: 0
           
       - job: PublishCovidService
+        dependsOn: BuildCovidService
         displayName: 'Publish CovidService'
         condition: eq(variables['Build.SourceBranchName'], 'master')
         steps:
