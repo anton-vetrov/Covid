@@ -19,4 +19,4 @@ How to run the project locally:
 How to a access the project deployed in Azure:
 1. Open swagger URL https://app-av-covidservice-test.azurewebsites.net/swagger/index.html
 2. Use swagger, or Postman collection included with the project to run APIs
-3. To use Postman, you may need to set {{serverUrl}} variable to https://app-av-covidservice-test in PostMan environment 
+3. To use Postman, you may need to set {{serverUrl}} variable to https://app-av-covidservice-test in the corresponding PostMan environment 
